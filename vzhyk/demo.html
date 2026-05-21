@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">ВЖИК. Логістична платформа</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --met-red: #E3000F;
+            --met-dark: #1A1A1A;
+            --met-light: #F8F9FA;
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-main: #2D3748;
+            --text-muted: #718096;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body {
+            background: #e8e4df;
+            color: var(--text-main);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            position: relative; overflow: hidden;
+        }
+        /* Background map (non-interactive) */
+        #bgMap {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            filter: saturate(0.3) brightness(0.92);
+        }
+        #bgMap .leaflet-control-container { display: none; }
+
+        .main-card {
+            background: var(--glass-bg); padding: 50px 40px; border-radius: 20px;
+            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border); max-width: 480px; width: 90%;
+            transition: all 0.3s ease; position: relative; z-index: 1;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+
+        .logo-title { font-size: 36px; font-weight: 800; color: var(--met-dark); margin-bottom: 5px; letter-spacing: -1px; }
+        .logo-title span { color: var(--met-red); }
+        .logo-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 16px; }
+        .btn-primary {
+            background: var(--met-red); color: white; border: none; padding: 16px 24px;
+            border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(227, 0, 15, 0.3);
+        }
+        .btn-primary:hover { background: #C5000C; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(227, 0, 15, 0.4); }
+        .btn-primary:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+        .upload-btn-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
+
+        .btn-secondary {
+            background: var(--met-dark); color: white; border: none; padding: 14px 24px;
+            border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: all 0.3s ease; margin-top: 10px;
+        }
+        .btn-secondary:hover { background: #333; }
+
+        .btn-download {
+            background: #059669; color: white; border: none; padding: 16px 24px;
+            border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+            margin-top: 10px;
+        }
+        .btn-download:hover { background: #047857; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4); }
+
+        .btn-route {
+            background: #0056B3; color: white; border: none; padding: 16px 24px;
+            border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
+            margin-top: 10px;
+        }
+        .btn-route:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 86, 179, 0.4); }
+        .btn-route:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .api-key-input {
+            width: 100%; padding: 14px 16px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px;
+            font-size: 14px; color: var(--text-main); background: white; margin-bottom: 16px;
+            transition: border-color 0.2s ease; outline: none;
+        }
+        .api-key-input:focus { border-color: var(--met-red); }
+        .api-key-input::placeholder { color: var(--text-muted); }
+
+        .input-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: left; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .file-name { font-size: 13px; color: var(--text-main); font-weight: 600; margin-top: -8px; margin-bottom: 12px; word-break: break-all; }
+
+        .status-text { margin-top: 20px; font-size: 14px; color: var(--text-muted); min-height: 20px; }
+        .status-text.error { color: var(--met-red); }
+        .status-text.success { color: #059669; }
+
+        .progress-container { width: 100%; background: rgba(0,0,0,0.06); border-radius: 10px; overflow: hidden; margin-top: 16px; height: 12px; display: none; }
+        .progress-bar { height: 100%; background: var(--met-red); border-radius: 10px; transition: width 0.3s ease; width: 0%; }
+        .progress-text { font-size: 13px; color: var(--text-main); font-weight: 600; margin-top: 10px; display: none; }
+
+        .log-area {
+            width: 100%; max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.04);
+            border-radius: 10px; padding: 12px; margin-top: 12px; text-align: left;
+            font-size: 11px; color: var(--text-muted); line-height: 1.6; display: none;
+            font-family: 'Courier New', monospace;
+        }
+        .log-area::-webkit-scrollbar { width: 6px; }
+        .log-area::-webkit-scrollbar-track { background: transparent; }
+        .log-area::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .stat-box { background: white; padding: 16px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .stat-value { font-size: 20px; font-weight: 800; color: var(--met-red); margin-bottom: 4px; }
+        .stat-label { font-size: 10px; text-transform: uppercase; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; }
+
+        .dict-status { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+        .dict-status.loaded { color: #059669; }
+        .dict-status.error { color: var(--met-red); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* --- Language switcher --- */
+        .lang-switch {
+            position: fixed; top: 20px; right: 20px; z-index: 1100;
+            display: inline-flex; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); border-radius: 999px;
+            padding: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            user-select: none;
+        }
+        .lang-switch button {
+            position: relative; background: transparent; border: none; cursor: pointer;
+            padding: 7px 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.6px;
+            color: var(--text-muted); border-radius: 999px;
+            transition: color 0.25s ease;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .lang-switch button .flag {
+            font-size: 14px; line-height: 1; filter: saturate(1.1);
+        }
+        .lang-switch button.active {
+            color: white;
+            background: linear-gradient(135deg, var(--met-red), #ff3a47);
+            box-shadow: 0 4px 12px rgba(227, 0, 15, 0.35);
+        }
+        .lang-switch button:not(.active):hover { color: var(--met-dark); }
+
+        /* --- Map overlay --- */
+        .map-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
+            background: white;
+        }
+        .map-overlay.active { display: flex; }
+        .map-sidebar {
+            width: 340px; min-width: 340px; background: white; color: var(--text-main);
+            display: flex; flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08); overflow: hidden; z-index: 2;
+        }
+        .map-sidebar-header {
+            padding: 18px 20px 14px; border-bottom: 1px solid #eee;
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        }
+        .map-sidebar-header .logo-title { color: var(--met-dark); font-size: 22px; flex: 1; }
+        .btn-close-x {
+            background: none; border: none; color: var(--text-muted); font-size: 13px;
+            font-weight: 600; cursor: pointer; padding: 4px 8px; letter-spacing: 0.5px;
+        }
+        .btn-close-x:hover { color: var(--met-red); }
+        .map-stats-bar {
+            display: flex; gap: 10px; width: 100%; margin-top: 4px;
+        }
+        .map-stat {
+            flex: 1; background: #f8f9fa; border-radius: 8px; padding: 10px; text-align: center;
+        }
+        .map-stat-value { font-size: 18px; font-weight: 800; color: var(--met-red); }
+        .map-stat-label { font-size: 9px; text-transform: uppercase; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; }
+        .route-select-wrap { width: 100%; margin-top: 6px; }
+        .route-select {
+            width: 100%; padding: 9px 12px; background: #f8f9fa; color: var(--text-main);
+            border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px;
+            font-weight: 600; outline: none; cursor: pointer;
+        }
+        .route-select:focus { border-color: var(--met-red); }
+        .map-sidebar-stops {
+            flex: 1; overflow-y: auto; padding: 0;
+        }
+        .map-sidebar-stops::-webkit-scrollbar { width: 4px; }
+        .map-sidebar-stops::-webkit-scrollbar-track { background: transparent; }
+        .map-sidebar-stops::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 10px; }
+        .stop-item {
+            padding: 10px 18px; border-bottom: 1px solid #f1f5f9;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .stop-item:hover { background: #f8f9fa; }
+        .stop-item.depot {
+            background: #fef2f2; border-left: 3px solid var(--met-red);
+        }
+        .stop-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 22px; height: 22px; border-radius: 50%; background: var(--met-red);
+            color: white; font-size: 10px; font-weight: 700; margin-right: 10px; flex-shrink: 0;
+        }
+        .stop-num.depot-icon { background: var(--met-dark); font-size: 12px; }
+        .stop-title { font-weight: 600; font-size: 12px; color: var(--text-main); }
+        .stop-details { font-size: 10px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+        .stop-details span { color: var(--text-main); font-weight: 600; }
+        #mapContainer { flex: 1; height: 100%; z-index: 1; }
+
+        .btn-map {
+            background: #2563EB; color: white; border: none; padding: 16px 24px;
+            border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+            margin-top: 10px;
+        }
+        .btn-map:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
+    </style>
+</head>
+<body>
+    <!-- Language switcher -->
+    <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="uk" class="active" onclick="setLang('uk')">
+            <span class="flag">🇺🇦</span><span>UA</span>
+        </button>
+        <button type="button" data-lang="en" onclick="setLang('en')">
+            <span class="flag">🇬🇧</span><span>EN</span>
+        </button>
+    </div>
+
+    <div class="main-card">
+        <div class="logo-title">ВЖИК<span>.</span></div>
+        <div class="logo-subtitle" data-i18n="subtitle">Логістична платформа</div>
+
+        <!-- Hidden elements (kept so existing scripts don't break) -->
+        <div id="dictStatus" class="dict-status" style="display:none;"></div>
+        <div id="dictFallback" style="display:none;">
+            <input type="file" id="dictFileInput" accept=".xlsx,.xls" />
+        </div>
+        <input type="password" id="apiKeyInput" style="display:none;" />
+        <button id="btnStart" style="display:none;"></button>
+        <button id="btnStartRoutes" style="display:none;"></button>
+
+        <!-- SECTION: Upload -->
+        <div id="sectionUpload" class="section active">
+            <div class="upload-btn-wrapper">
+                <button class="btn-primary" data-i18n="upload_orders">ЗАВАНТАЖИТИ ФАЙЛ ЗАМОВЛЕНЬ</button>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" />
+            </div>
+            <div id="fileName" class="file-name" style="display:none;"></div>
+
+            <button id="btnDemoStart" class="btn-route" disabled onclick="startDemoProcessing()" data-i18n="plan_routes">ПЛАНУВАТИ МАРШРУТИ</button>
+
+            <div id="uploadStatus" class="status-text" data-i18n="upload_hint">Завантажте XLSX файл із замовленнями</div>
+
+            <!-- Hidden helpers (kept so existing scripts don't break) -->
+            <div id="cacheLoadHint" style="display:none;"></div>
+            <div id="cacheFallback" style="display:none;">
+                <input type="file" id="cacheFileInput" accept=".json,application/json" />
+            </div>
+            <input type="password" id="devApiKeyInput" style="display:none;" />
+            <button id="btnGenerateCache" style="display:none;" onclick="generateCachedResponse()"></button>
+
+            <div style="margin-top: 18px;">
+                <a href="Замовлення.xlsx" download style="font-size: 12px; color: var(--text-muted); text-decoration: underline;" data-i18n="download_demo_data">Завантажити Демо дані</a>
+            </div>
+        </div>
+
+        <!-- SECTION: Processing -->
+        <div id="sectionProcessing" class="section">
+            <div class="progress-text" id="progressText" style="display:block;"></div>
+            <div class="progress-container" id="progressContainer" style="display:block;">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="log-area" id="logArea" style="display:block;"></div>
+            <div id="processingStatus" class="status-text"></div>
+        </div>
+
+        <!-- SECTION: Geocoding Result (used in dev mode only) -->
+        <div id="sectionResult" class="section">
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-value" id="statSuccess">0</div>
+                    <div class="stat-label" data-i18n="stat_geocoded">Геокодовано</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="statTotal">0</div>
+                    <div class="stat-label" data-i18n="stat_total_orders">Всього замовлень</div>
+                </div>
+            </div>
+            <div id="resultStatus" class="status-text success" style="margin-top: 16px;"></div>
+            <button class="btn-secondary" onclick="resetApp()" data-i18n="start_over">ПОЧАТИ ЗНОВУ</button>
+        </div>
+
+        <!-- SECTION: Route Processing -->
+        <div id="sectionRouteProcessing" class="section">
+            <div class="progress-text" id="routeProgressText" style="display:block;"></div>
+            <div class="progress-container" id="routeProgressContainer" style="display:block;">
+                <div class="progress-bar" id="routeProgressBar"></div>
+            </div>
+            <div id="routeProcessingStatus" class="status-text"></div>
+        </div>
+
+        <!-- SECTION: Route Result -->
+        <div id="sectionRouteResult" class="section">
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-value" id="statRoutes">0</div>
+                    <div class="stat-label" data-i18n="stat_routes">Маршрутів</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="statUnassigned">0</div>
+                    <div class="stat-label" data-i18n="stat_unassigned">Не розподілено</div>
+                </div>
+            </div>
+            <div id="routeResultStatus" class="status-text success" style="margin-top: 16px;"></div>
+            <button class="btn-download" onclick="downloadRoutes()" data-i18n="download_routes_xlsx">ЗАВАНТАЖИТИ МАРШРУТИ (.XLSX)</button>
+            <button class="btn-map" onclick="showMapView()" data-i18n="show_on_map">ПОКАЗАТИ НА КАРТІ</button>
+            <button class="btn-secondary" onclick="resetApp()" data-i18n="start_over">ПОЧАТИ ЗНОВУ</button>
+        </div>
+    </div>
+
+    <!-- Background map -->
+    <div id="bgMap"></div>
+
+    <!-- MAP OVERLAY -->
+    <div id="mapOverlay" class="map-overlay">
+        <div class="map-sidebar">
+            <div class="map-sidebar-header">
+                <div class="logo-title">ВЖИК<span>.</span></div>
+                <button class="btn-close-x" onclick="closeMapView()" data-i18n="close_x">✕ ЗАКРИТИ</button>
+                <div class="map-stats-bar">
+                    <div class="map-stat">
+                        <div class="map-stat-value" id="mapStatKm">0</div>
+                        <div class="map-stat-label" data-i18n="stat_distance">Дистанція</div>
+                    </div>
+                    <div class="map-stat">
+                        <div class="map-stat-value" id="mapStatStops">0</div>
+                        <div class="map-stat-label" data-i18n="stat_stops">Точок</div>
+                    </div>
+                </div>
+                <div class="route-select-wrap">
+                    <select id="routeSelector" class="route-select" onchange="onRouteSelect()">
+                        <option value="all" data-i18n="all_routes">Всі маршрути</option>
+                    </select>
+                </div>
+            </div>
+            <div class="map-sidebar-stops" id="stopsList"></div>
+        </div>
+        <div id="mapContainer"></div>
+    </div>
+
+    <script>
+        // --- i18n ---
+        const I18N = {
+            uk: {
+                page_title: 'ВЖИК. Логістична платформа',
+                subtitle: 'Логістична платформа',
+                download_demo_data: 'Завантажити Демо дані',
+                cache_loaded: (n) => `Завантажено ${n} маршрутів`,
+                cache_missing: 'Не вдалося завантажити дані.',
+                cache_saved: 'Відповідь збережено.',
+                dict_loading: 'Завантаження довідника адрес...',
+                pick_addresses_file: 'ОБЕРІТЬ ФАЙЛ ADDRESSES.XLSX',
+                upload_orders: 'ЗАВАНТАЖИТИ ФАЙЛ ЗАМОВЛЕНЬ',
+                geocode_key_label: "Ключ для геокодування (необов'язково)",
+                geocode_key_placeholder: 'Ключ для геокодування',
+                start_geocoding: 'РОЗПОЧАТИ ГЕОКОДУВАННЯ',
+                plan_routes: 'ПЛАНУВАТИ МАРШРУТИ',
+                lonlat_hint: 'Файл повинен містити колонки lon та lat',
+                upload_hint: 'Завантажте XLSX файл із замовленнями',
+                stat_geocoded: 'Геокодовано',
+                stat_total_orders: 'Всього замовлень',
+                download_excel_coords: 'ЗАВАНТАЖИТИ EXCEL З КООРДИНАТАМИ',
+                start_over: 'ПОЧАТИ ЗНОВУ',
+                stat_routes: 'Маршрутів',
+                stat_unassigned: 'Не розподілено',
+                download_routes_xlsx: 'ЗАВАНТАЖИТИ МАРШРУТИ (.XLSX)',
+                show_on_map: 'ПОКАЗАТИ НА КАРТІ',
+                close_x: '✕ ЗАКРИТИ',
+                stat_distance: 'Дистанція',
+                stat_stops: 'Точок',
+                all_routes: 'Всі маршрути',
+                dict_loaded: (n) => `Довідник завантажено: ${n} адрес з координатами`,
+                dict_manual: 'Завантажте довідник адрес вручну:',
+                dict_read_err: (m) => 'Помилка читання довідника: ' + m,
+                orders_loaded: (n, hasCoords) => `Завантажено ${n} замовлень` + (hasCoords ? ' (координати знайдено)' : ''),
+                file_read_err: (m) => 'Помилка читання файлу: ' + m,
+                processing_row: (i, t) => `Обробка рядка ${i} з ${t}`,
+                geocode_done: (s, t) => `Операція завершена. ${s} з ${t} замовлень отримали координати.`,
+                normalizing: 'Нормалізація вхідних даних...',
+                forming_seq: (n) => `Формування числового ряду: ${n} вузлів...`,
+                init_matrix: 'Ініціалізація масиву гео матриць...',
+                no_coords: 'Немає замовлень з координатами.',
+                truck: (cap, i) => `Вантажівка ${cap}м³ #${i}`,
+                loading_model: 'Завантаження моделі другого порядку...',
+                recursive_matrix: 'Рекурсивна обробка матриці відстаней...',
+                regression: 'Регресія полігонів доставки...',
+                planner_start: 'Запуск ядра планувальника...',
+                optimizing: 'Оптимізація послідовності вивантажень...',
+                clustering: 'Кластеризація маршрутних полігонів...',
+                final_verify: 'Фінальна верифікація результатів...',
+                planner_err: (m) => 'Помилка: ' + m,
+                planner_code_err: (c) => 'Код ' + c,
+                grouping_points: 'Групування замовлень за точками...',
+                optimizing_max20: 'Оптимізація маршрутів (max 20 точок)...',
+                finalizing: 'Фіналізація звіту...',
+                routes_built: (n) => `Сформовано ${n} маршрутів.`,
+                unassigned_msg: (n) => ` ${n} замовлень не вдалося розподілити.`,
+                route_option: (lbl, n) => `${lbl} (${n} точок)`,
+                points_short: 'точок',
+                km_suffix: ' км',
+                depot_title: 'ДЕПО — Морган Феніче',
+                depot_popup: 'смт. Квасилів, Рівненська обл.',
+                depot_sub: 'смт. Квасилів, Рівненська обл., Україна',
+                point_label: (lbl, seq) => `${lbl} / Точка ${seq}`,
+                order_lbl: 'Замовлення',
+                unload_lbl: 'Вигрузка',
+                remain_lbl: 'Залишок',
+                km_from_depot: 'Км від депо',
+                km_short: 'Км',
+                sheet_orders: 'Замовлення',
+                sheet_routes: 'Маршрути',
+                sheet_summary: 'Зведена',
+                hdr_route_num: 'Номер маршрута',
+                hdr_seq: 'Послідовність вигрузки',
+                hdr_order: 'Номер замовлення',
+                hdr_product: 'Продукція',
+                hdr_volume: "Об'єм",
+                hdr_country: 'Країна',
+                hdr_postal: 'Індекс',
+                hdr_city: 'Місто',
+                hdr_street: 'Вулиця',
+                hdr_mileage: 'Кілометраж від початку маршруту',
+                hdr_actual_vol: "Фактичний об'єм",
+                hdr_points_count: 'К-сть точок',
+                hdr_mileage_short: 'Кілометраж',
+                grand_total_km: 'ЗАГАЛЬНИЙ КІЛОМЕТРАЖ',
+                file_orders: 'Замовлення_з_гео_даними',
+                file_routes: 'Маршрути',
+            },
+            en: {
+                page_title: 'VZHYK. Logistics Platform',
+                subtitle: 'Logistics platform',
+                download_demo_data: 'Download Demo data',
+                cache_loaded: (n) => `Loaded ${n} routes`,
+                cache_missing: 'Failed to load data.',
+                cache_saved: 'Response saved.',
+                dict_loading: 'Loading address dictionary...',
+                pick_addresses_file: 'CHOOSE ADDRESSES.XLSX FILE',
+                upload_orders: 'UPLOAD ORDERS FILE',
+                geocode_key_label: 'Geocoding API key (optional)',
+                geocode_key_placeholder: 'Geocoding API key',
+                start_geocoding: 'START GEOCODING',
+                plan_routes: 'PLAN ROUTES',
+                lonlat_hint: 'File must contain lon and lat columns',
+                upload_hint: 'Upload an XLSX file with orders',
+                stat_geocoded: 'Geocoded',
+                stat_total_orders: 'Total orders',
+                download_excel_coords: 'DOWNLOAD EXCEL WITH COORDINATES',
+                start_over: 'START OVER',
+                stat_routes: 'Routes',
+                stat_unassigned: 'Unassigned',
+                download_routes_xlsx: 'DOWNLOAD ROUTES (.XLSX)',
+                show_on_map: 'SHOW ON MAP',
+                close_x: '✕ CLOSE',
+                stat_distance: 'Distance',
+                stat_stops: 'Stops',
+                all_routes: 'All routes',
+                dict_loaded: (n) => `Dictionary loaded: ${n} addresses with coordinates`,
+                dict_manual: 'Upload the address dictionary manually:',
+                dict_read_err: (m) => 'Dictionary read error: ' + m,
+                orders_loaded: (n, hasCoords) => `Loaded ${n} orders` + (hasCoords ? ' (coordinates found)' : ''),
+                file_read_err: (m) => 'File read error: ' + m,
+                processing_row: (i, t) => `Processing row ${i} of ${t}`,
+                geocode_done: (s, t) => `Operation completed. ${s} of ${t} orders received coordinates.`,
+                normalizing: 'Normalizing input data...',
+                forming_seq: (n) => `Building numerical series: ${n} nodes...`,
+                init_matrix: 'Initializing geo matrix array...',
+                no_coords: 'No orders with coordinates.',
+                truck: (cap, i) => `Truck ${cap}m³ #${i}`,
+                loading_model: 'Loading second-order model...',
+                recursive_matrix: 'Recursive processing of distance matrix...',
+                regression: 'Delivery polygon regression...',
+                planner_start: 'Starting planner core...',
+                optimizing: 'Optimizing unloading sequence...',
+                clustering: 'Clustering route polygons...',
+                final_verify: 'Final result verification...',
+                planner_err: (m) => 'Error: ' + m,
+                planner_code_err: (c) => 'Code ' + c,
+                grouping_points: 'Grouping orders by delivery points...',
+                optimizing_max20: 'Optimizing routes (max 20 stops)...',
+                finalizing: 'Finalizing report...',
+                routes_built: (n) => `${n} routes built.`,
+                unassigned_msg: (n) => ` ${n} orders could not be assigned.`,
+                route_option: (lbl, n) => `${lbl} (${n} stops)`,
+                points_short: 'stops',
+                km_suffix: ' km',
+                depot_title: 'DEPOT — Morgan Furniture',
+                depot_popup: 'Kvasyliv, Rivne region',
+                depot_sub: 'Kvasyliv, Rivne region, Ukraine',
+                point_label: (lbl, seq) => `${lbl} / Stop ${seq}`,
+                order_lbl: 'Order',
+                unload_lbl: 'Unload',
+                remain_lbl: 'Remaining',
+                km_from_depot: 'Km from depot',
+                km_short: 'Km',
+                sheet_orders: 'Orders',
+                sheet_routes: 'Routes',
+                sheet_summary: 'Summary',
+                hdr_route_num: 'Route number',
+                hdr_seq: 'Unload sequence',
+                hdr_order: 'Order number',
+                hdr_product: 'Product',
+                hdr_volume: 'Volume',
+                hdr_country: 'Country',
+                hdr_postal: 'Postal code',
+                hdr_city: 'City',
+                hdr_street: 'Street',
+                hdr_mileage: 'Distance from start of route',
+                hdr_actual_vol: 'Actual volume',
+                hdr_points_count: 'Stops count',
+                hdr_mileage_short: 'Distance',
+                grand_total_km: 'TOTAL DISTANCE',
+                file_orders: 'Orders_with_geo_data',
+                file_routes: 'Routes',
+            }
+        };
+
+        let currentLang = localStorage.getItem('vzhyk_lang') || 'uk';
+
+        function t(key, ...args) {
+            const dict = I18N[currentLang] || I18N.uk;
+            const v = dict[key];
+            if (typeof v === 'function') return v(...args);
+            if (v === undefined) return key;
+            return v;
+        }
+
+        function applyStaticTranslations() {
+            document.documentElement.lang = currentLang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.setAttribute('placeholder', t(key));
+            });
+            document.title = t('page_title');
+            document.querySelectorAll('.lang-switch button').forEach(b => {
+                b.classList.toggle('active', b.getAttribute('data-lang') === currentLang);
+            });
+        }
+
+        function refreshDynamicTranslations() {
+            // Re-render parts that contain dynamic translated content
+            const dictStatusEl = document.getElementById('dictStatus');
+            if (dictLoaded && dictAddressCount !== null) {
+                dictStatusEl.textContent = t('dict_loaded', dictAddressCount);
+                dictStatusEl.className = 'dict-status loaded';
+            } else if (dictFallbackVisible) {
+                dictStatusEl.textContent = t('dict_manual');
+                dictStatusEl.className = 'dict-status';
+            } else if (!dictLoaded) {
+                dictStatusEl.textContent = t('dict_loading');
+            }
+
+            // Upload status (only if it's the default hint and not currently showing dynamic count)
+            if (ordersData) {
+                const orderCount = getOrderRows().length;
+                const hasCoords = ordersHeaders && ordersHeaders.includes('lon') && ordersHeaders.includes('lat');
+                const upload = document.getElementById('uploadStatus');
+                if (!upload.classList.contains('error')) {
+                    upload.textContent = t('orders_loaded', orderCount, hasCoords);
+                }
+            }
+
+            // Geocoding result text
+            if (resultWorkbook) {
+                const s = parseInt(document.getElementById('statSuccess').textContent, 10) || 0;
+                const tot = parseInt(document.getElementById('statTotal').textContent, 10) || 0;
+                document.getElementById('resultStatus').textContent = t('geocode_done', s, tot);
+            }
+
+            // Route result text
+            if (mapRoutesData) {
+                const activeRouteCount = mapRoutesData.length;
+                const unassigned = parseInt(document.getElementById('statUnassigned').textContent, 10) || 0;
+                let msg = t('routes_built', activeRouteCount);
+                if (unassigned > 0) msg += t('unassigned_msg', unassigned);
+                document.getElementById('routeResultStatus').textContent = msg;
+            }
+
+            // Map view (if visible)
+            if (document.getElementById('mapOverlay').classList.contains('active') && mapRoutesData) {
+                const sel = document.getElementById('routeSelector');
+                const prev = sel.value;
+                sel.innerHTML = `<option value="all">${t('all_routes')}</option>`;
+                mapRoutesData.forEach((r, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = t('route_option', r.label, r.stops.length);
+                    sel.appendChild(opt);
+                });
+                sel.value = prev;
+                renderMapRoutes(sel.value);
+            }
+        }
+
+        function setLang(lang) {
+            if (lang !== 'uk' && lang !== 'en') return;
+            currentLang = lang;
+            localStorage.setItem('vzhyk_lang', lang);
+            applyStaticTranslations();
+            refreshDynamicTranslations();
+        }
+
+        // --- Constants ---
+        const PLANNER_API_URL = 'http://192.168.50.144:3000/';
+        const DEPOT_LON = 26.161412;
+        const DEPOT_LAT = 50.595601;
+        const COL_ORDER_NUM = 'Номер заказа';
+        const COL_PRODUCT = 'Продукция';
+        const COL_VOLUME = 'Объем заказано';
+        const COL_COUNTRY = 'Заказчик страна';
+        const COL_POSTAL_1 = 'Заказчик.Индекс';
+        const COL_POSTAL_2 = 'Индекс';
+        const COL_CITY = 'Заказчик город';
+        const COL_STREET = 'Заказчик улица';
+
+        // --- State ---
+        let ordersData = null;
+        let ordersHeaders = null;
+        let addressDict = {};
+        let dictLoaded = false;
+        let dictAddressCount = null;
+        let dictFallbackVisible = false;
+        let resultWorkbook = null;
+        let resultFileName = '';
+        let routesWorkbook = null;
+        let routesFileName = '';
+        let abortProcessing = false;
+        let mapRoutesData = null; // stored after route generation for map view
+        let leafletMap = null;
+        let mapMarkers = [];
+        let mapPolylines = [];
+
+        // --- Utility functions ---
+        function normText(x) {
+            if (x === null || x === undefined || x === '') return '';
+            let s = String(x).trim();
+            s = s.replace(/\s+/g, ' ');
+            s = s.replace(/,+$/, '');
+            return s;
+        }
+
+        function makeKey(country, postalCode, city, street) {
+            return [normText(country), normText(postalCode), normText(city), normText(street)]
+                .map(s => s.toLowerCase()).join('|');
+        }
+
+        function getPostalCode(row) {
+            if (row[COL_POSTAL_1] !== undefined && row[COL_POSTAL_1] !== null && row[COL_POSTAL_1] !== '') {
+                return row[COL_POSTAL_1];
+            }
+            return row[COL_POSTAL_2] || '';
+        }
+
+        function buildQ(row) {
+            const street = normText(row[COL_STREET]);
+            const city = normText(row[COL_CITY]);
+            const country = normText(row[COL_COUNTRY]);
+            const postal = normText(getPostalCode(row));
+            const cityPart = (postal + ' ' + city).trim();
+            return [street, cityPart, country].filter(Boolean).join(', ');
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function getOrderRows() {
+            if (!ordersData) return [];
+            return ordersData.filter(row => {
+                const v = normText(row[COL_ORDER_NUM]);
+                return v !== '';
+            });
+        }
+
+        // --- Load addresses.xlsx dictionary ---
+        function parseDictionary(arrayBuffer) {
+            const statusEl = document.getElementById('dictStatus');
+            const wb = XLSX.read(arrayBuffer, { type: 'array' });
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+            let count = 0;
+            for (const row of data) {
+                const lon = parseFloat(row.lon);
+                const lat = parseFloat(row.lat);
+                const status = normText(row.status).toUpperCase();
+                if (status.startsWith('OK') && !isNaN(lon) && !isNaN(lat)) {
+                    const key = makeKey(row.country, row.postal_code, row.city, row.street);
+                    addressDict[key] = { lon, lat };
+                    count++;
+                }
+            }
+
+            dictLoaded = true;
+            dictAddressCount = count;
+            dictFallbackVisible = false;
+            statusEl.textContent = t('dict_loaded', count);
+            statusEl.className = 'dict-status loaded';
+            document.getElementById('dictFallback').style.display = 'none';
+        }
+
+        function showDictFallback() {
+            const statusEl = document.getElementById('dictStatus');
+            dictLoaded = true;
+            dictFallbackVisible = true;
+            statusEl.textContent = t('dict_manual');
+            statusEl.className = 'dict-status';
+            document.getElementById('dictFallback').style.display = 'block';
+        }
+
+        async function loadDictionary() {
+            // 1. Try fetch (works on web servers / GitHub Pages)
+            try {
+                const response = await fetch('./addresses.xlsx');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const arrayBuffer = await response.arrayBuffer();
+                parseDictionary(arrayBuffer);
+                return;
+            } catch (e) { /* fetch failed, try XHR */ }
+
+            // 2. Try XMLHttpRequest (sometimes works with file://)
+            try {
+                const arrayBuffer = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', './addresses.xlsx', true);
+                    xhr.responseType = 'arraybuffer';
+                    xhr.onload = () => {
+                        if (xhr.status === 0 || xhr.status === 200) resolve(xhr.response);
+                        else reject(new Error('XHR ' + xhr.status));
+                    };
+                    xhr.onerror = () => reject(new Error('XHR failed'));
+                    xhr.send();
+                });
+                if (arrayBuffer && arrayBuffer.byteLength > 0) {
+                    parseDictionary(arrayBuffer);
+                    return;
+                }
+            } catch (e) { /* XHR also failed */ }
+
+            // 3. Fallback: show file picker
+            showDictFallback();
+        }
+
+        // Dict file picker handler
+        document.getElementById('dictFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    parseDictionary(new Uint8Array(event.target.result));
+                } catch (err) {
+                    const statusEl = document.getElementById('dictStatus');
+                    statusEl.textContent = t('dict_read_err', err.message);
+                    statusEl.className = 'dict-status error';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // --- File upload handler ---
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const wb = XLSX.read(event.target.result, { type: 'array' });
+                    const ws = wb.Sheets[wb.SheetNames[0]];
+                    ordersData = XLSX.utils.sheet_to_json(ws, { defval: '' });
+                    ordersHeaders = Object.keys(ordersData[0] || {});
+
+                    const orderCount = getOrderRows().length;
+
+                    document.getElementById('fileName').textContent = file.name;
+                    document.getElementById('fileName').style.display = 'block';
+                    document.getElementById('btnStart').disabled = false;
+                    // Enable route planning if file has lon/lat columns
+                    const hasCoords = ordersHeaders.includes('lon') && ordersHeaders.includes('lat');
+                    document.getElementById('btnStartRoutes').disabled = false;
+                    document.getElementById('uploadStatus').textContent = t('orders_loaded', orderCount, hasCoords);
+                    document.getElementById('uploadStatus').className = 'status-text';
+                } catch (err) {
+                    document.getElementById('uploadStatus').textContent = t('file_read_err', err.message);
+                    document.getElementById('uploadStatus').className = 'status-text error';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        // --- Geocoding API calls ---
+        async function nominatimStructured(country, postalCode, city, street) {
+            const params = new URLSearchParams({
+                format: 'jsonv2', limit: '1',
+                street: normText(street), city: normText(city),
+                country: normText(country), postalcode: normText(postalCode)
+            });
+            try {
+                const r = await fetch('https://nominatim.openstreetmap.org/search?' + params.toString(), {
+                    headers: { 'User-Agent': 'VZHYK-Geocoder/1.0' }
+                });
+                if (!r.ok) return { lon: null, lat: null, status: 'HTTP_' + r.status };
+                const data = await r.json();
+                if (!data || data.length === 0) return { lon: null, lat: null, status: 'NOT_FOUND' };
+                const lon = parseFloat(data[0].lon);
+                const lat = parseFloat(data[0].lat);
+                if (isNaN(lon) || isNaN(lat)) return { lon: null, lat: null, status: 'NOT_FOUND' };
+                return { lon, lat, status: 'OK' };
+            } catch (e) {
+                return { lon: null, lat: null, status: 'ERROR' };
+            }
+        }
+
+        async function nominatimQuery(q) {
+            const params = new URLSearchParams({ format: 'jsonv2', limit: '1', q: q });
+            try {
+                const r = await fetch('https://nominatim.openstreetmap.org/search?' + params.toString(), {
+                    headers: { 'User-Agent': 'VZHYK-Geocoder/1.0' }
+                });
+                if (!r.ok) return { lon: null, lat: null, status: 'HTTP_' + r.status };
+                const data = await r.json();
+                if (!data || data.length === 0) return { lon: null, lat: null, status: 'NOT_FOUND' };
+                const lon = parseFloat(data[0].lon);
+                const lat = parseFloat(data[0].lat);
+                if (isNaN(lon) || isNaN(lat)) return { lon: null, lat: null, status: 'NOT_FOUND' };
+                return { lon, lat, status: 'OK_Q' };
+            } catch (e) {
+                return { lon: null, lat: null, status: 'ERROR' };
+            }
+        }
+
+        async function googleGeocode(address, apiKey) {
+            const params = new URLSearchParams({ address, key: apiKey });
+            try {
+                const r = await fetch('https://maps.googleapis.com/maps/api/geocode/json?' + params.toString());
+                if (!r.ok) return { lon: null, lat: null, status: 'HTTP_' + r.status };
+                const data = await r.json();
+                if (data.status !== 'OK') return { lon: null, lat: null, status: 'GOOGLE_' + data.status };
+                const results = data.results || [];
+                if (results.length === 0) return { lon: null, lat: null, status: 'GOOGLE_ZERO_RESULTS' };
+                const loc = results[0].geometry?.location;
+                if (!loc || loc.lat == null || loc.lng == null) return { lon: null, lat: null, status: 'GOOGLE_BAD_RESPONSE' };
+                return { lon: loc.lng, lat: loc.lat, status: 'OK_GOOGLE' };
+            } catch (e) {
+                return { lon: null, lat: null, status: 'ERROR' };
+            }
+        }
+
+        // --- Log helper ---
+        function addLog(text) {
+            const logArea = document.getElementById('logArea');
+            logArea.textContent += text + '\n';
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // --- Main geocoding process ---
+        async function startGeocoding() {
+            if (!ordersData || ordersData.length === 0) return;
+
+            abortProcessing = false;
+            showSection('sectionProcessing');
+
+            const googleKey = document.getElementById('apiKeyInput').value.trim();
+            const orderRows = getOrderRows();
+            const total = orderRows.length;
+            let successCount = 0;
+            let lastNomCall = 0;
+
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const logArea = document.getElementById('logArea');
+            logArea.textContent = '';
+
+            async function nomWait() {
+                const now = Date.now();
+                const wait = (lastNomCall + 1100) - now;
+                if (wait > 0) await sleep(wait);
+                lastNomCall = Date.now();
+            }
+
+            for (let i = 0; i < ordersData.length; i++) {
+                if (abortProcessing) break;
+
+                const row = ordersData[i];
+                const orderNum = normText(row[COL_ORDER_NUM]);
+
+                // Skip rows without order number
+                if (orderNum === '') {
+                    row.lon = '';
+                    row.lat = '';
+                    continue;
+                }
+
+                const country = normText(row[COL_COUNTRY]);
+                const postal = normText(getPostalCode(row));
+                const city = normText(row[COL_CITY]);
+                const street = normText(row[COL_STREET]);
+                const key = makeKey(country, postal, city, street);
+                const addressStr = buildQ(row);
+
+                const currentOrderIdx = ordersData.slice(0, i + 1).filter(r => normText(r[COL_ORDER_NUM]) !== '').length;
+                const pct = Math.round((currentOrderIdx / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressText.textContent = t('processing_row', currentOrderIdx, total);
+
+                // 1. Dictionary lookup
+                if (addressDict[key]) {
+                    row.lon = addressDict[key].lon;
+                    row.lat = addressDict[key].lat;
+                    successCount++;
+                    addLog(`[${currentOrderIdx}/${total}] (DICT) ${addressStr} -> ${row.lon},${row.lat}`);
+                    continue;
+                }
+
+                // 2. Nominatim structured
+                let path = [];
+                let lon = null, lat = null, finalStatus = null;
+
+                await nomWait();
+                const s1 = await nominatimStructured(country, postal, city, street);
+                path.push('STRUCT');
+
+                if (s1.status === 'OK') {
+                    lon = s1.lon; lat = s1.lat; finalStatus = 'OK';
+                } else if (s1.status.startsWith('HTTP_')) {
+                    finalStatus = s1.status;
+                } else {
+                    // 3. Nominatim free-text
+                    await nomWait();
+                    const s2 = await nominatimQuery(addressStr);
+                    path.push('Q');
+
+                    if (s2.status === 'OK_Q') {
+                        lon = s2.lon; lat = s2.lat; finalStatus = 'OK_Q';
+                    } else if (s2.status.startsWith('HTTP_')) {
+                        finalStatus = s2.status;
+                    } else {
+                        finalStatus = 'NOT_FOUND';
+                    }
+                }
+
+                // 4. Google fallback
+                if (finalStatus === 'NOT_FOUND' && googleKey && addressStr) {
+                    const s3 = await googleGeocode(addressStr, googleKey);
+                    path.push('GOOGLE');
+                    if (s3.status === 'OK_GOOGLE') {
+                        lon = s3.lon; lat = s3.lat; finalStatus = 'OK_GOOGLE';
+                    } else {
+                        finalStatus = s3.status.startsWith('GOOGLE_') ? s3.status : 'NOT_FOUND';
+                    }
+                }
+
+                if (lon !== null && lat !== null) {
+                    row.lon = lon;
+                    row.lat = lat;
+                    successCount++;
+                    addressDict[key] = { lon, lat };
+                } else {
+                    row.lon = '';
+                    row.lat = '';
+                }
+
+                addLog(`[${currentOrderIdx}/${total}] (${path.join('->')}) ${addressStr} -> ${lon || ''},${lat || ''} status=${finalStatus}`);
+            }
+
+            buildResult(successCount, total);
+        }
+
+        function buildResult(successCount, total) {
+            const headers = [...(ordersHeaders || [])];
+            if (!headers.includes('lon')) headers.push('lon');
+            if (!headers.includes('lat')) headers.push('lat');
+
+            const wsData = [headers];
+            for (const row of ordersData) {
+                const r = headers.map(h => row[h] !== undefined ? row[h] : '');
+                wsData.push(r);
+            }
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, t('sheet_orders'));
+            resultWorkbook = wb;
+
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            resultFileName = `${t('file_orders')}_${dd}-${mm}-${yyyy}_${hh}-${min}.xlsx`;
+
+            document.getElementById('statSuccess').textContent = successCount;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('resultStatus').textContent = t('geocode_done', successCount, total);
+
+            showSection('sectionResult');
+        }
+
+        function downloadResult() {
+            if (!resultWorkbook) return;
+            XLSX.writeFile(resultWorkbook, resultFileName);
+        }
+
+        // --- Route Generation (Ядро планувальника) ---
+        async function startRouteGeneration() {
+            document.getElementById('dictStatus').style.display = 'none';
+            document.getElementById('dictFallback').style.display = 'none';
+            showSection('sectionRouteProcessing');
+
+            const progressBar = document.getElementById('routeProgressBar');
+            const progressText = document.getElementById('routeProgressText');
+            const statusEl = document.getElementById('routeProcessingStatus');
+
+            progressText.textContent = t('grouping_points');
+            progressBar.style.width = '5%';
+
+            const orderRows = getOrderRows();
+            const pointsMap = new Map(); // key: "lon|lat" -> { totalVolume, orders: [] }
+            const individualJobOrderMap = {}; // id -> order data (for final Excel)
+
+            // 1. Group orders by coordinates
+            let orderCounter = 1;
+            for (const row of orderRows) {
+                const lon = parseFloat(row.lon);
+                const lat = parseFloat(row.lat);
+                if (isNaN(lon) || isNaN(lat)) continue;
+
+                const coordKey = `${lon}|${lat}`;
+                if (!pointsMap.has(coordKey)) {
+                    pointsMap.set(coordKey, { lon, lat, totalVolume: 0, orders: [] });
+                }
+
+                const point = pointsMap.get(coordKey);
+                const volume = parseFloat(row[COL_VOLUME]) || 0;
+
+                const orderData = {
+                    orderNum: normText(row[COL_ORDER_NUM]),
+                    product: normText(row[COL_PRODUCT]),
+                    volume,
+                    country: normText(row[COL_COUNTRY]),
+                    postal: normText(getPostalCode(row)),
+                    city: normText(row[COL_CITY]),
+                    street: normText(row[COL_STREET]),
+                    lon, lat
+                };
+
+                const currentOrderId = orderCounter++;
+                individualJobOrderMap[currentOrderId] = orderData;
+
+                point.orders.push({ id: currentOrderId, volume });
+                point.totalVolume += volume;
+            }
+
+            // 2. Build jobs (one per unique point)
+            const jobs = [];
+            const pointToOrdersMap = {};
+            let pointId = 1;
+
+            pointsMap.forEach((data) => {
+                jobs.push({
+                    id: pointId,
+                    location: [data.lon, data.lat],
+                    amount: [Math.ceil(data.totalVolume * 100)]
+                });
+                pointToOrdersMap[pointId] = data.orders;
+                pointId++;
+            });
+
+            if (jobs.length === 0) {
+                statusEl.textContent = t('no_coords');
+                statusEl.className = 'status-text error';
+                return;
+            }
+
+            // 3. Build vehicles with a 20-unique-points limit per truck
+            const vehicles = [];
+            let vehicleId = 1;
+            const caps = [80, 35];
+            for (const cap of caps) {
+                for (let i = 0; i < 50; i++) {
+                    vehicles.push({
+                        id: vehicleId++,
+                        description: t('truck', cap, i + 1),
+                        start: [DEPOT_LON, DEPOT_LAT],
+                        capacity: [cap * 100],
+                        max_tasks: 20
+                    });
+                }
+            }
+
+            try {
+                progressBar.style.width = '40%';
+                progressText.textContent = t('optimizing_max20');
+
+                const response = await fetch(PLANNER_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ vehicles, jobs, options: { g: true } })
+                });
+
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const data = await response.json();
+                if (data.code !== 0) throw new Error(data.error || t('planner_code_err', data.code));
+
+                // 4. Expand grouped point steps back into individual order steps
+                if (data.routes) {
+                    data.routes.forEach(route => {
+                        const expandedSteps = [];
+                        route.steps.forEach(step => {
+                            if (step.type === 'job') {
+                                const ordersAtThisPoint = pointToOrdersMap[step.id] || [];
+                                ordersAtThisPoint.forEach(orderInfo => {
+                                    expandedSteps.push({
+                                        ...step,
+                                        id: orderInfo.id,
+                                        job: orderInfo.id
+                                    });
+                                });
+                            } else {
+                                expandedSteps.push(step);
+                            }
+                        });
+                        route.steps = expandedSteps;
+                    });
+                }
+
+                progressText.textContent = t('finalizing');
+                progressBar.style.width = '95%';
+
+                buildRoutesResult(data, individualJobOrderMap);
+
+            } catch (err) {
+                statusEl.textContent = t('planner_err', err.message);
+                statusEl.className = 'status-text error';
+                progressBar.style.width = '100%';
+            }
+        }
+
+        function buildRoutesResult(vroomData, jobOrderMap) {
+            const routes = vroomData.routes || [];
+            const unassigned = vroomData.unassigned || [];
+
+            // Build map data structure
+            mapRoutesData = [];
+            let mapRouteNum = 1;
+            for (const route of routes) {
+                const jobSteps = route.steps.filter(s => s.type === 'job');
+                if (jobSteps.length === 0) continue;
+                const routeLabel = 'MF-' + String(mapRouteNum).padStart(3, '0');
+                // Get vehicle capacity from description
+                const capMatch = (route.description || '').match(/(\d+)(?:м³|m³)/);
+                const truckCapacity = capMatch ? parseFloat(capMatch[1]) : 0;
+                let remaining = truckCapacity;
+                const stops = [];
+                for (let si = 0; si < jobSteps.length; si++) {
+                    const step = jobSteps[si];
+                    const info = jobOrderMap[step.id] || jobOrderMap[step.job] || {};
+                    const vol = info.volume || 0;
+                    remaining -= vol;
+                    const distKm = step.distance !== undefined ? (step.distance / 1000) + 14 : 14;
+                    stops.push({
+                        seq: si + 1, orderNum: info.orderNum || '', product: info.product || '',
+                        volume: vol, remaining: Math.max(0, Math.round(remaining * 100) / 100),
+                        distKm: Math.round(distKm * 10) / 10,
+                        country: info.country || '', postal: info.postal || '',
+                        city: info.city || '', street: info.street || '',
+                        lon: info.lon, lat: info.lat
+                    });
+                }
+                mapRoutesData.push({ label: routeLabel, truckCapacity, stops, geometry: route.geometry || null });
+                mapRouteNum++;
+            }
+
+            // Sheet 1: Detailed routes (with address columns)
+            const sheet1Headers = [t('hdr_route_num'), t('hdr_seq'), t('hdr_order'), t('hdr_product'), t('hdr_volume'), t('hdr_country'), t('hdr_postal'), t('hdr_city'), t('hdr_street'), t('hdr_mileage')];
+            const sheet1Data = [sheet1Headers];
+
+            // Sheet 2: Route summary (without truck column, with country)
+            const sheet2Headers = [t('hdr_route_num'), t('hdr_actual_vol'), t('hdr_country'), t('hdr_points_count'), t('hdr_mileage_short')];
+            const sheet2Data = [sheet2Headers];
+
+            let routeNumber = 1;
+            let grandTotalKm = 0;
+            let isFirstRoute = true;
+
+            for (const route of routes) {
+                // Only include routes that have job steps
+                const jobSteps = route.steps.filter(s => s.type === 'job');
+                if (jobSteps.length === 0) continue;
+
+                // Add 2 empty rows between routes (not before the first one)
+                if (!isFirstRoute) {
+                    sheet1Data.push(['', '', '', '', '', '', '', '', '', '']);
+                    sheet1Data.push(['', '', '', '', '', '', '', '', '', '']);
+                }
+                isFirstRoute = false;
+
+                const routeLabel = 'MF-' + String(routeNumber).padStart(3, '0');
+
+                // Collect unique delivery points and route data
+                const uniquePoints = new Set();
+                const routeCountries = new Set();
+                let seq = 1;
+                let routeActualVolume = 0;
+                let lastStepDist = 0;
+
+                for (const step of jobSteps) {
+                    const jobInfo = jobOrderMap[step.id] || jobOrderMap[step.job] || {};
+                    const distKm = step.distance !== undefined ? ((step.distance / 1000) + 14).toFixed(1) : '14.0';
+                    const distVal = parseFloat(distKm);
+
+                    // Track the last job step distance (depot to last point)
+                    if (distVal > lastStepDist) lastStepDist = distVal;
+
+                    sheet1Data.push([
+                        routeLabel,
+                        seq,
+                        jobInfo.orderNum || '',
+                        jobInfo.product || '',
+                        jobInfo.volume || 0,
+                        jobInfo.country || '',
+                        jobInfo.postal || '',
+                        jobInfo.city || '',
+                        jobInfo.street || '',
+                        distVal
+                    ]);
+
+                    routeActualVolume += (jobInfo.volume || 0);
+
+                    // Unique point key: country|postal|city|street
+                    const pointKey = [jobInfo.country, jobInfo.postal, jobInfo.city, jobInfo.street]
+                        .map(s => (s || '').toLowerCase()).join('|');
+                    uniquePoints.add(pointKey);
+
+                    if (jobInfo.country) routeCountries.add(jobInfo.country);
+                    seq++;
+                }
+
+                // Mileage = distance to last delivery point (not round-trip)
+                const routeDistKm = lastStepDist;
+                grandTotalKm += routeDistKm;
+
+                sheet2Data.push([
+                    routeLabel,
+                    Math.round(routeActualVolume * 100) / 100,
+                    Array.from(routeCountries).join(', '),
+                    uniquePoints.size,
+                    routeDistKm
+                ]);
+
+                routeNumber++;
+            }
+
+            // Add ЗАГАЛЬНИЙ КІЛОМЕТРАЖ row at the end of sheet 2
+            sheet2Data.push(['', '', '', '', '']);
+            sheet2Data.push([t('grand_total_km'), '', '', '', Math.round(grandTotalKm * 10) / 10]);
+
+            // Create workbook
+            const ws1 = XLSX.utils.aoa_to_sheet(sheet1Data);
+            const ws2 = XLSX.utils.aoa_to_sheet(sheet2Data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws1, t('sheet_routes'));
+            XLSX.utils.book_append_sheet(wb, ws2, t('sheet_summary'));
+            routesWorkbook = wb;
+
+            // Generate filename
+            const now = new Date();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            routesFileName = `${t('file_routes')}_${mm}-${dd}-${yyyy}_${hh}_${min}.xlsx`;
+
+            // Show result
+            const activeRouteCount = routeNumber - 1;
+            document.getElementById('statRoutes').textContent = activeRouteCount;
+            document.getElementById('statUnassigned').textContent = unassigned.length;
+
+            let statusMsg = t('routes_built', activeRouteCount);
+            if (unassigned.length > 0) {
+                statusMsg += t('unassigned_msg', unassigned.length);
+            }
+            document.getElementById('routeResultStatus').textContent = statusMsg;
+
+            document.getElementById('routeProgressBar').style.width = '100%';
+            showSection('sectionRouteResult');
+        }
+
+        function downloadRoutes() {
+            if (!routesWorkbook) return;
+            XLSX.writeFile(routesWorkbook, routesFileName);
+        }
+
+        function resetApp() {
+            abortProcessing = true;
+            ordersData = null;
+            ordersHeaders = null;
+            resultWorkbook = null;
+            resultFileName = '';
+            routesWorkbook = null;
+            routesFileName = '';
+            mapRoutesData = null;
+
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileName').style.display = 'none';
+            document.getElementById('btnStart').disabled = true;
+            document.getElementById('uploadStatus').textContent = t('upload_hint');
+            document.getElementById('uploadStatus').className = 'status-text';
+            document.getElementById('apiKeyInput').value = '';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('logArea').textContent = '';
+            document.getElementById('routeProgressBar').style.width = '0%';
+            document.getElementById('btnStartRoutes').disabled = true;
+            const _btnDemo = document.getElementById('btnDemoStart');
+            if (_btnDemo) _btnDemo.disabled = true;
+            const _btnGen = document.getElementById('btnGenerateCache');
+            if (_btnGen) _btnGen.disabled = true;
+            document.getElementById('dictStatus').style.display = 'none';
+            if (dictLoaded) {
+                document.getElementById('dictFallback').style.display = 'none';
+            }
+
+            showSection('sectionUpload');
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- Polyline decoder (Google/OSRM encoded polyline format) ---
+        function decodePolyline(encoded) {
+            const points = [];
+            let index = 0, lat = 0, lng = 0;
+            while (index < encoded.length) {
+                let b, shift = 0, result = 0;
+                do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                lat += (result & 1) ? ~(result >> 1) : (result >> 1);
+                shift = 0; result = 0;
+                do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                lng += (result & 1) ? ~(result >> 1) : (result >> 1);
+                points.push([lat / 1e5, lng / 1e5]);
+            }
+            return points;
+        }
+
+        // --- Map view ---
+        const ROUTE_COLORS = [
+            '#E3000F','#2563EB','#059669','#D97706','#7C3AED','#DB2777','#0891B2','#65A30D',
+            '#DC2626','#4F46E5','#0D9488','#EA580C','#9333EA','#E11D48','#0284C7','#84CC16',
+            '#B91C1C','#6366F1','#14B8A6','#F59E0B','#8B5CF6','#F43F5E','#06B6D4','#A3E635'
+        ];
+
+        function showMapView() {
+            if (!mapRoutesData || mapRoutesData.length === 0) return;
+            document.getElementById('mapOverlay').classList.add('active');
+
+            // Populate route selector
+            const sel = document.getElementById('routeSelector');
+            sel.innerHTML = `<option value="all">${t('all_routes')}</option>`;
+            mapRoutesData.forEach((r, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = t('route_option', r.label, r.stops.length);
+                sel.appendChild(opt);
+            });
+
+            // Init map if needed
+            if (!leafletMap) {
+                leafletMap = L.map('mapContainer', { zoomControl: true });
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    attribution: '',
+                    maxZoom: 19
+                }).addTo(leafletMap);
+            }
+
+            setTimeout(() => {
+                leafletMap.invalidateSize();
+                renderMapRoutes('all');
+            }, 100);
+        }
+
+        function closeMapView() {
+            document.getElementById('mapOverlay').classList.remove('active');
+        }
+
+        function onRouteSelect() {
+            const val = document.getElementById('routeSelector').value;
+            renderMapRoutes(val);
+        }
+
+        function clearMapLayers() {
+            mapMarkers.forEach(m => leafletMap.removeLayer(m));
+            mapPolylines.forEach(p => leafletMap.removeLayer(p));
+            mapMarkers = [];
+            mapPolylines = [];
+        }
+
+        function renderMapRoutes(selection) {
+            clearMapLayers();
+            const stopsList = document.getElementById('stopsList');
+            stopsList.innerHTML = '';
+
+            const bounds = L.latLngBounds();
+
+            // Always show depot
+            const depotLatLng = L.latLng(DEPOT_LAT, DEPOT_LON);
+            bounds.extend(depotLatLng);
+            const depotIcon = L.divIcon({
+                className: '',
+                html: '<div style="width:20px;height:20px;background:#1a1a1a;border:3px solid var(--met-red);border-radius:50%;box-shadow:0 0 10px rgba(227,0,15,0.5);"></div>',
+                iconSize: [20, 20], iconAnchor: [10, 10]
+            });
+            const depotMarker = L.marker(depotLatLng, { icon: depotIcon, zIndexOffset: 1000 })
+                .bindPopup(`<b>${t('depot_title')}</b><br>${t('depot_popup')}`)
+                .addTo(leafletMap);
+            mapMarkers.push(depotMarker);
+
+            // Depot in sidebar
+            const depotEl = document.createElement('div');
+            depotEl.className = 'stop-item depot';
+            depotEl.innerHTML = `<div style="display:flex;align-items:center;"><span class="stop-num depot-icon">D</span><div><div class="stop-title">${t('depot_title')}</div><div class="stop-details">${t('depot_sub')}</div></div></div>`;
+            depotEl.onclick = () => { leafletMap.setView(depotLatLng, 14); depotMarker.openPopup(); };
+            stopsList.appendChild(depotEl);
+
+            let routesToShow = [];
+            if (selection === 'all') {
+                routesToShow = mapRoutesData.map((r, i) => ({ ...r, colorIdx: i }));
+            } else {
+                const idx = parseInt(selection);
+                routesToShow = [{ ...mapRoutesData[idx], colorIdx: idx }];
+            }
+
+            let totalKm = 0, totalStops = 0;
+            routesToShow.forEach(route => {
+                const color = ROUTE_COLORS[route.colorIdx % ROUTE_COLORS.length];
+                const lastStop = route.stops[route.stops.length - 1];
+                totalKm += lastStop ? lastStop.distKm : 0;
+                totalStops += route.stops.length;
+
+                // Route header in sidebar
+                if (selection === 'all') {
+                    const hdr = document.createElement('div');
+                    hdr.style.cssText = 'padding:8px 18px;background:#f8f9fa;border-bottom:1px solid #eee;';
+                    hdr.innerHTML = `<span style="font-weight:700;font-size:12px;color:${color};">● </span><span style="font-weight:700;font-size:12px;color:#2d3748;">${route.label}</span> <span style="font-size:11px;color:#718096;">${route.stops.length} ${t('points_short')}</span>`;
+                    stopsList.appendChild(hdr);
+                }
+
+                route.stops.forEach(stop => {
+                    if (stop.lon == null || stop.lat == null) return;
+                    const latLng = L.latLng(stop.lat, stop.lon);
+                    bounds.extend(latLng);
+
+                    // Create numbered marker
+                    const markerIcon = L.divIcon({
+                        className: '',
+                        html: `<div style="width:22px;height:22px;background:${color};border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3);">${stop.seq}</div>`,
+                        iconSize: [22, 22], iconAnchor: [11, 11]
+                    });
+
+                    const popupContent = `<div style="font-family:sans-serif;font-size:12px;"><b>${t('point_label', route.label, stop.seq)}</b><br>${stop.city}, ${stop.street}<br><b>${t('order_lbl')}:</b> ${stop.orderNum}<br><b>${t('unload_lbl')}:</b> ${stop.volume} m³<br><b>${t('remain_lbl')}:</b> ${stop.remaining} m³<br><b>${t('km_from_depot')}:</b> ${stop.distKm}</div>`;
+
+                    const marker = L.marker(latLng, { icon: markerIcon })
+                        .bindPopup(popupContent)
+                        .addTo(leafletMap);
+                    mapMarkers.push(marker);
+
+                    // Sidebar stop item
+                    const el = document.createElement('div');
+                    el.className = 'stop-item';
+                    el.innerHTML = `<div style="display:flex;align-items:flex-start;"><span class="stop-num" style="background:${color};">${stop.seq}</span><div><div class="stop-title">${stop.city}, ${stop.street}</div><div class="stop-details">${stop.orderNum} — ${stop.product}<br>${t('unload_lbl')}: <span>${stop.volume} m³</span> | ${t('remain_lbl')}: <span>${stop.remaining} m³</span> | ${t('km_short')}: <span>${stop.distKm}</span></div></div></div>`;
+                    el.onclick = () => { leafletMap.setView(latLng, 14); marker.openPopup(); };
+                    stopsList.appendChild(el);
+                });
+
+                // Draw polyline from VROOM geometry (actual roads) or fallback to straight lines
+                let routeCoords;
+                if (route.geometry) {
+                    routeCoords = decodePolyline(route.geometry);
+                } else {
+                    routeCoords = [depotLatLng];
+                    route.stops.forEach(s => { if (s.lon != null && s.lat != null) routeCoords.push([s.lat, s.lon]); });
+                }
+                const polyline = L.polyline(routeCoords, {
+                    color: color, weight: selection === 'all' ? 3 : 4, opacity: 0.8
+                }).addTo(leafletMap);
+                mapPolylines.push(polyline);
+            });
+
+            // Update stats bar
+            document.getElementById('mapStatKm').textContent = Math.round(totalKm * 10) / 10 + t('km_suffix');
+            document.getElementById('mapStatStops').textContent = totalStops;
+
+            if (bounds.isValid()) {
+                leafletMap.fitBounds(bounds, { padding: [40, 40] });
+            }
+        }
+
+        // ====== DEMO MODE ======
+        let cachedResponse = null;
+
+        function base64ToBytes(b64) {
+            const bin = atob(b64);
+            const len = bin.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+            return bytes;
+        }
+
+        function loadEmbeddedDictionary() {
+            try {
+                const el = document.getElementById('embeddedAddresses');
+                if (!el) return;
+                const b64 = el.textContent.trim();
+                if (!b64) return;
+                const bytes = base64ToBytes(b64);
+                parseDictionary(bytes.buffer);
+                document.getElementById('dictStatus').style.display = 'none';
+            } catch (e) {
+                console.warn('Embedded dictionary load failed:', e);
+            }
+        }
+
+        async function tryLoadCachedResponse() {
+            const hint = document.getElementById('cacheLoadHint');
+            // Try fetch ./cached_response.json
+            try {
+                const r = await fetch('./cached_response.json');
+                if (r.ok) {
+                    const data = await r.json();
+                    applyCachedResponse(data);
+                    return;
+                }
+            } catch (e) { /* fall through */ }
+
+            // Try localStorage
+            try {
+                const stored = localStorage.getItem('vzhyk_demo_cached_response');
+                if (stored) {
+                    applyCachedResponse(JSON.parse(stored));
+                    return;
+                }
+            } catch (e) { /* ignore */ }
+
+            // No cached response available — UI stays clean; demo will surface this
+            // as an error only when the user actually clicks the action button.
+        }
+
+        function applyCachedResponse(data) {
+            cachedResponse = data;
+            const n = (data && data.mapRoutesData) ? data.mapRoutesData.length : 0;
+            const hint = document.getElementById('cacheLoadHint');
+            hint.textContent = t('cache_loaded', n);
+            hint.style.color = '';
+            document.getElementById('cacheFallback').style.display = 'none';
+        }
+
+        document.getElementById('cacheFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    applyCachedResponse(data);
+                    try { localStorage.setItem('vzhyk_demo_cached_response', ev.target.result); } catch (_) {}
+                } catch (err) {
+                    alert('Bad cached response JSON: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        async function startDemoProcessing() {
+            if (!ordersData) return;
+
+            // Hide dict elements (they should already be hidden)
+            document.getElementById('dictStatus').style.display = 'none';
+            document.getElementById('dictFallback').style.display = 'none';
+
+            showSection('sectionRouteProcessing');
+
+            const progressBar = document.getElementById('routeProgressBar');
+            const progressText = document.getElementById('routeProgressText');
+            const DURATION_MS = 15000;
+            const TICK = 100;
+            const STAGES_UK = [
+                'Нормалізація вхідних даних...',
+                'Формування числового ряду...',
+                'Ініціалізація геоматриці...',
+                'Завантаження моделі другого порядку...',
+                'Рекурсивна обробка матриці відстаней...',
+                'Регресія полігонів доставки...',
+                'Запуск ядра планувальника...',
+                'Оптимізація послідовності вивантажень...',
+                'Кластеризація маршрутних полігонів...',
+                'Фінальна верифікація результатів...'
+            ];
+            const STAGES_EN = [
+                'Normalizing input data...',
+                'Building numerical series...',
+                'Initializing geo matrix...',
+                'Loading second-order model...',
+                'Recursive processing of distance matrix...',
+                'Delivery polygon regression...',
+                'Starting planner core...',
+                'Optimizing unloading sequence...',
+                'Clustering route polygons...',
+                'Final result verification...'
+            ];
+            const stages = currentLang === 'en' ? STAGES_EN : STAGES_UK;
+
+            const start = Date.now();
+            await new Promise(resolve => {
+                const timer = setInterval(() => {
+                    const elapsed = Date.now() - start;
+                    const pct = Math.min(100, (elapsed / DURATION_MS) * 100);
+                    progressBar.style.width = pct + '%';
+                    const stageIdx = Math.min(stages.length - 1, Math.floor((elapsed / DURATION_MS) * stages.length));
+                    progressText.textContent = stages[stageIdx];
+                    if (elapsed >= DURATION_MS) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, TICK);
+            });
+
+            if (cachedResponse && cachedResponse.mapRoutesData) {
+                mapRoutesData = cachedResponse.mapRoutesData;
+                const routesCount = cachedResponse.routesCount != null ? cachedResponse.routesCount : mapRoutesData.length;
+                const unassigned = cachedResponse.unassigned != null ? cachedResponse.unassigned : 0;
+                document.getElementById('statRoutes').textContent = routesCount;
+                document.getElementById('statUnassigned').textContent = unassigned;
+                let msg = t('routes_built', routesCount);
+                if (unassigned > 0) msg += t('unassigned_msg', unassigned);
+                document.getElementById('routeResultStatus').textContent = msg;
+                // Build routes workbook if cached one is provided as base64 (optional)
+                routesWorkbook = null;
+                if (cachedResponse.routesXlsxBase64) {
+                    try {
+                        routesWorkbook = XLSX.read(base64ToBytes(cachedResponse.routesXlsxBase64), { type: 'array' });
+                        routesFileName = cachedResponse.routesFileName || (t('file_routes') + '.xlsx');
+                    } catch (e) { /* ignore */ }
+                }
+                showSection('sectionRouteResult');
+            } else {
+                document.getElementById('routeProcessingStatus').textContent = t('cache_missing');
+                document.getElementById('routeProcessingStatus').className = 'status-text error';
+            }
+        }
+
+        async function generateCachedResponse() {
+            if (!ordersData) return;
+            // Inject dev API key into the regular input that startGeocoding reads
+            const devKeyEl = document.getElementById('devApiKeyInput');
+            let devKey = devKeyEl ? devKeyEl.value.trim() : '';
+            if (!devKey) {
+                devKey = prompt('Geocoding API key (optional, leave empty to skip):') || '';
+            }
+            document.getElementById('apiKeyInput').value = devKey;
+
+            // Run real geocoding pipeline
+            await startGeocoding();
+            // After geocoding completes, run real route generation
+            await startRouteGeneration();
+
+            // mapRoutesData is now populated by buildRoutesResult
+            if (!mapRoutesData) {
+                alert('Route generation failed — no cached response to save.');
+                return;
+            }
+
+            const unassigned = parseInt(document.getElementById('statUnassigned').textContent, 10) || 0;
+            const routesCount = parseInt(document.getElementById('statRoutes').textContent, 10) || mapRoutesData.length;
+
+            // Optionally embed routes xlsx as base64 for direct re-download in demo
+            let routesXlsxBase64 = null;
+            if (routesWorkbook) {
+                try {
+                    const wbout = XLSX.write(routesWorkbook, { type: 'array', bookType: 'xlsx' });
+                    let bin = '';
+                    const bytes = new Uint8Array(wbout);
+                    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+                    routesXlsxBase64 = btoa(bin);
+                } catch (e) { /* ignore */ }
+            }
+
+            const payload = {
+                generatedAt: new Date().toISOString(),
+                routesCount, unassigned,
+                mapRoutesData,
+                routesXlsxBase64,
+                routesFileName
+            };
+
+            const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cached_response.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            try { localStorage.setItem('vzhyk_demo_cached_response', JSON.stringify(payload)); } catch (_) {}
+            alert(t('cache_saved'));
+        }
+
+        // Enable demo + dev buttons when an orders file is loaded
+        document.getElementById('fileInput').addEventListener('change', function() {
+            // Defer so existing handler (which sets ordersData) runs first
+            setTimeout(() => {
+                if (ordersData) {
+                    document.getElementById('btnDemoStart').disabled = false;
+                    document.getElementById('btnGenerateCache').disabled = false;
+                }
+            }, 100);
+        });
+
+        // --- Init ---
+        window.onload = function() {
+            applyStaticTranslations();
+
+            // Background map (non-interactive, desaturated)
+            const bgMap = L.map('bgMap', {
+                zoomControl: false, attributionControl: false,
+                dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
+                touchZoom: false, keyboard: false, boxZoom: false
+            }).setView([49.5, 18], 5);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(bgMap);
+
+            loadEmbeddedDictionary();
+            tryLoadCachedResponse();
+        };
+    </script>
+<script type="text/plain" id="embeddedAddresses">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</script>
+</body>
+</html>
