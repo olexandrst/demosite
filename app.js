@@ -84,6 +84,11 @@ document.querySelectorAll(".tile-fav").forEach((btn) => {
 
 document.querySelectorAll(".tile").forEach((tile) => {
   const open = () => {
+    const href = tile.getAttribute("data-href");
+    if (href) {
+      window.location.href = href;
+      return;
+    }
     tile.animate(
       [{ transform: "translateY(-6px) scale(1)" }, { transform: "translateY(-6px) scale(0.98)" }, { transform: "translateY(-6px) scale(1)" }],
       { duration: 260, easing: "cubic-bezier(.2,.8,.2,1)" }
