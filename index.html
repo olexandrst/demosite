@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Демо рішень Metinvest Digital</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <header class="topbar glass">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <span class="brand-dot"></span>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title" data-i18n="brand.title">Metinvest Digital</span>
+        <span class="brand-subtitle" data-i18n="brand.subtitle">Демо рішень</span>
+      </div>
+    </div>
+
+    <nav class="topnav">
+      <button class="nav-btn active" data-section="home">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+        <span data-i18n="nav.home">Головна</span>
+      </button>
+      <button class="nav-btn" data-section="solutions">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+        <span data-i18n="nav.solutions">Рішення</span>
+      </button>
+      <button class="nav-btn" data-section="about">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+        <span data-i18n="nav.about">Про проєкт</span>
+      </button>
+    </nav>
+
+    <div class="topright">
+      <div class="lang-switch glass-inner" role="tablist" aria-label="Language">
+        <button class="lang-btn active" data-lang="uk" role="tab" aria-selected="true">
+          <span class="flag flag-ua" aria-hidden="true"></span>UA
+        </button>
+        <button class="lang-btn" data-lang="en" role="tab" aria-selected="false">
+          <span class="flag flag-gb" aria-hidden="true"></span>EN
+        </button>
+      </div>
+      <div class="user-chip glass-inner">
+        <span class="user-avatar">МД</span>
+        <div class="user-info">
+          <span class="user-name" data-i18n="user.name">Користувач Demo</span>
+          <span class="user-role" data-i18n="user.role">Metinvest Digital</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <h1 class="hero-title">
+        <span data-i18n="hero.title">Демо рішень</span>
+        <span class="accent">Metinvest Digital</span>
+      </h1>
+      <p class="hero-subtitle" data-i18n="hero.subtitle">
+        Оберіть рішення, щоб ознайомитись з його можливостями
+      </p>
+    </section>
+
+    <section class="tiles">
+      <article class="tile glass" tabindex="0" data-tile="logistics">
+        <div class="tile-icon icon-red">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 16V7h11v9"/>
+            <path d="M14 10h4l3 3v3h-7"/>
+            <circle cx="7" cy="18" r="2"/>
+            <circle cx="17" cy="18" r="2"/>
+          </svg>
+        </div>
+        <button class="tile-fav" aria-label="favorite">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg>
+        </button>
+        <h3 class="tile-title" data-i18n="tile.logistics.title">Оптимізація логістики</h3>
+        <p class="tile-desc" data-i18n="tile.logistics.desc">
+          Геокодування адрес та планування оптимальних маршрутів доставки
+        </p>
+        <div class="tile-footer">
+          <span class="tag"><span class="dot dot-red"></span><span data-i18n="tile.logistics.tag1">Маршрутизація</span></span>
+          <span class="tag"><span class="dot dot-grey"></span><span data-i18n="tile.logistics.tag2">Геокодування</span></span>
+        </div>
+      </article>
+
+      <article class="tile glass" tabindex="0" data-tile="tech">
+        <div class="tile-icon icon-dark">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/>
+            <path d="M5.6 5.6 7.7 7.7"/><path d="M16.3 16.3 18.4 18.4"/>
+            <path d="M5.6 18.4 7.7 16.3"/><path d="M16.3 7.7 18.4 5.6"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <button class="tile-fav" aria-label="favorite">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg>
+        </button>
+        <h3 class="tile-title" data-i18n="tile.tech.title">Автоматизація створення технологій</h3>
+        <p class="tile-desc" data-i18n="tile.tech.desc">
+          Розпізнавання креслень та автоматична генерація технологічних карт
+        </p>
+        <div class="tile-footer">
+          <span class="tag"><span class="dot dot-red"></span><span data-i18n="tile.tech.tag1">Креслення</span></span>
+          <span class="tag"><span class="dot dot-grey"></span><span data-i18n="tile.tech.tag2">AI-обробка</span></span>
+        </div>
+      </article>
+
+      <article class="tile glass" tabindex="0" data-tile="docs">
+        <div class="tile-icon icon-grey">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 3v5h5"/>
+            <path d="M9 13h6"/>
+            <path d="M9 17h4"/>
+          </svg>
+        </div>
+        <button class="tile-fav" aria-label="favorite">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg>
+        </button>
+        <h3 class="tile-title" data-i18n="tile.docs.title">Розумна обробка документів</h3>
+        <p class="tile-desc" data-i18n="tile.docs.desc">
+          Класифікація, витяг даних та інтелектуальний пошук у документах
+        </p>
+        <div class="tile-footer">
+          <span class="tag"><span class="dot dot-red"></span><span data-i18n="tile.docs.tag1">OCR</span></span>
+          <span class="tag"><span class="dot dot-grey"></span><span data-i18n="tile.docs.tag2">NLP</span></span>
+        </div>
+      </article>
+    </section>
+
+    <section class="stats">
+      <div class="stat glass">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-value">1.8 <small data-i18n="stat.sec">сек</small></span>
+          <span class="stat-label" data-i18n="stat.respLabel">Середній час відповіді</span>
+        </div>
+      </div>
+      <div class="stat glass">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11"/></svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-value">99.2%</span>
+          <span class="stat-label" data-i18n="stat.accLabel">Точність обробки</span>
+        </div>
+      </div>
+      <div class="stat glass">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        </div>
+        <div class="stat-text">
+          <span class="stat-value">3</span>
+          <span class="stat-label" data-i18n="stat.solLabel">Активних рішення</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer.text">© Metinvest Digital — демонстраційні рішення</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
