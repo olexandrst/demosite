@@ -37,8 +37,8 @@ html, body {
 
 body {
   background:
-    radial-gradient(1000px 600px at -10% -20%, rgba(227, 6, 19, 0.10), transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, rgba(13, 13, 18, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(13, 13, 18, 0.06), transparent 60%),
+    radial-gradient(700px 400px at 50% 110%, rgba(227, 6, 19, 0.04), transparent 60%),
     linear-gradient(180deg, #f7f8fb 0%, #eceef3 100%);
   min-height: 100vh;
   overflow-x: hidden;
@@ -58,23 +58,17 @@ body {
   filter: blur(80px);
   opacity: 0.55;
 }
-.orb-1 {
-  width: 480px; height: 480px;
-  background: radial-gradient(circle, var(--red) 0%, transparent 70%);
-  top: -120px; left: -120px;
-  opacity: 0.35;
-}
 .orb-2 {
   width: 380px; height: 380px;
   background: radial-gradient(circle, #4a4a55 0%, transparent 70%);
-  bottom: -120px; right: -80px;
-  opacity: 0.30;
+  bottom: -140px; right: -100px;
+  opacity: 0.18;
 }
 .orb-3 {
-  width: 320px; height: 320px;
+  width: 280px; height: 280px;
   background: radial-gradient(circle, #ff6b78 0%, transparent 70%);
-  top: 40%; right: 20%;
-  opacity: 0.20;
+  top: 60%; right: 18%;
+  opacity: 0.10;
 }
 
 /* ---------- glass primitives ---------- */
@@ -199,35 +193,12 @@ body {
 }
 .flag-ua { background: linear-gradient(to bottom, #0057B7 0 50%, #FFD700 50% 100%); }
 .flag-gb {
-  background:
-    linear-gradient(45deg, transparent 45%, #fff 45% 55%, transparent 55%) ,
-    linear-gradient(-45deg, transparent 45%, #fff 45% 55%, transparent 55%) ,
-    linear-gradient(0deg, transparent 40%, #fff 40% 60%, transparent 60%) ,
-    linear-gradient(90deg, transparent 40%, #fff 40% 60%, transparent 60%) ,
-    linear-gradient(0deg, transparent 44%, #C8102E 44% 56%, transparent 56%) ,
-    linear-gradient(90deg, transparent 44%, #C8102E 44% 56%, transparent 56%) ,
-    #012169;
+  background: #012169;
+  overflow: hidden;
+  position: relative;
 }
+.flag-gb svg { width: 100%; height: 100%; display: block; }
 
-.user-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 14px 5px 5px;
-}
-.user-avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
-  color: white;
-  font-size: 12px;
-  font-weight: 700;
-  display: grid; place-items: center;
-  box-shadow: 0 4px 10px rgba(227, 6, 19, 0.30);
-}
-.user-info { display: flex; flex-direction: column; line-height: 1.15; }
-.user-name { font-size: 13px; font-weight: 600; color: var(--ink); }
-.user-role { font-size: 11px; color: var(--grey-700); }
 
 /* ---------- main ---------- */
 .main {
@@ -370,31 +341,6 @@ body {
 .dot-red { background: var(--red); box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.15); }
 .dot-grey { background: var(--grey-500); box-shadow: 0 0 0 3px rgba(138, 138, 150, 0.15); }
 
-/* ---------- stats ---------- */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-.stat {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 22px;
-}
-.stat-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(227, 6, 19, 0.10), rgba(227, 6, 19, 0.18));
-  color: var(--red);
-  display: grid; place-items: center;
-  box-shadow: inset 0 0 0 1px rgba(227, 6, 19, 0.15);
-}
-.stat-text { display: flex; flex-direction: column; }
-.stat-value { font-size: 22px; font-weight: 800; color: var(--black); line-height: 1.1; }
-.stat-value small { font-size: 13px; font-weight: 500; color: var(--grey-700); }
-.stat-label { font-size: 12px; color: var(--grey-700); margin-top: 2px; }
-
 /* ---------- footer ---------- */
 .footer {
   text-align: center;
@@ -412,8 +358,7 @@ body {
     gap: 12px;
   }
   .topnav { grid-column: 1 / -1; order: 3; justify-self: stretch; justify-content: center; }
-  .tiles, .stats { grid-template-columns: 1fr; }
-  .user-info { display: none; }
+  .tiles { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {

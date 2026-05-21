@@ -2,12 +2,11 @@ const I18N = {
   uk: {
     "brand.title": "Metinvest Digital",
     "brand.subtitle": "Демо рішень",
-    "nav.home": "Головна",
-    "nav.solutions": "Рішення",
-    "nav.about": "Про проєкт",
-    "user.name": "Користувач Demo",
-    "user.role": "Metinvest Digital",
-    "hero.title": "Демо рішень",
+    "nav.live": "Наживо",
+    "nav.slides": "Слайди",
+    "nav.about": "Про Нас",
+    "hero.titleA": "Демо рішень",
+    "hero.titleB": "Metinvest Digital",
     "hero.subtitle": "Оберіть рішення, щоб ознайомитись з його можливостями",
     "tile.logistics.title": "Оптимізація логістики",
     "tile.logistics.desc": "Геокодування адрес та планування оптимальних маршрутів доставки",
@@ -21,21 +20,16 @@ const I18N = {
     "tile.docs.desc": "Класифікація, витяг даних та інтелектуальний пошук у документах",
     "tile.docs.tag1": "OCR",
     "tile.docs.tag2": "NLP",
-    "stat.sec": "сек",
-    "stat.respLabel": "Середній час відповіді",
-    "stat.accLabel": "Точність обробки",
-    "stat.solLabel": "Активних рішення",
-    "footer.text": "© Metinvest Digital — демонстраційні рішення"
+    "footer.text": "Metinvest Digital 2026"
   },
   en: {
     "brand.title": "Metinvest Digital",
     "brand.subtitle": "Solutions Demo",
-    "nav.home": "Home",
-    "nav.solutions": "Solutions",
+    "nav.live": "Live",
+    "nav.slides": "Slides",
     "nav.about": "About",
-    "user.name": "Demo User",
-    "user.role": "Metinvest Digital",
-    "hero.title": "Solutions Demo",
+    "hero.titleA": "Demo Solutions of",
+    "hero.titleB": "Metinvest Digital",
     "hero.subtitle": "Choose a solution to explore its capabilities",
     "tile.logistics.title": "Logistics Optimization",
     "tile.logistics.desc": "Address geocoding and optimal delivery route planning",
@@ -49,11 +43,7 @@ const I18N = {
     "tile.docs.desc": "Classification, data extraction and intelligent document search",
     "tile.docs.tag1": "OCR",
     "tile.docs.tag2": "NLP",
-    "stat.sec": "sec",
-    "stat.respLabel": "Average response time",
-    "stat.accLabel": "Processing accuracy",
-    "stat.solLabel": "Active solutions",
-    "footer.text": "© Metinvest Digital — demo solutions"
+    "footer.text": "Metinvest Digital 2026"
   }
 };
 
