@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Про нас — Metinvest Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f1f3;
+    color: #1a1a2e;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ===== CONTAINER ===== */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .section-title h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+  }
+  .section-title h2 span { color: #E30613; }
+  .section-title p {
+    font-size: 1.05rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    position: relative;
+    padding: 100px 0 80px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fb 0%, #eceef2 50%, #f0f1f3 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(circle, #d1d5db 1px, transparent 1px);
+    background-size: 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(227,6,19,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    animation: fadeInUp 1s ease;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #E30613;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .hero-badge .dot {
+    width: 8px; height: 8px;
+    background: #E30613;
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+  .hero h1 {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span { color: #E30613; }
+  .hero .subtitle {
+    font-size: 1.2rem;
+    color: #4b5563;
+    max-width: 650px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-decoration {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .hero-decoration span {
+    width: 48px; height: 5px;
+    border-radius: 100px;
+    background: #E30613;
+    opacity: 0.7;
+  }
+  .hero-decoration span:nth-child(2) { width: 24px; opacity: 0.4; }
+  .hero-decoration span:nth-child(3) { width: 12px; opacity: 0.2; }
+
+  /* ===== ABOUT SECTION ===== */
+  .about {
+    padding: 80px 0;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .about-text h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1a1a2e;
+  }
+  .about-text p {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+  .mission-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .mission-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #E30613, #ff4757);
+  }
+  .mission-card .mission-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #E30613, #ff4757);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .mission-card .mission-icon svg { width: 28px; height: 28px; fill: #fff; }
+  .mission-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #E30613;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .mission-card p {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    line-height: 1.7;
+  }
+
+  /* ===== STATS SECTION ===== */
+  .stats {
+    padding: 80px 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .stat-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .stat-icon.red { background: rgba(227,6,19,0.1); }
+  .stat-icon.dark { background: rgba(26,26,46,0.08); }
+  .stat-icon svg { width: 24px; height: 24px; }
+  .stat-number {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  /* ===== SERVICES SECTION ===== */
+  .services {
+    padding: 80px 0;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .service-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 260px;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .service-icon-wrap {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .service-icon-wrap.red { background: #E30613; }
+  .service-icon-wrap.dark { background: #1a1a2e; }
+  .service-icon-wrap svg { width: 24px; height: 24px; fill: #fff; }
+  .service-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+  .service-card p {
+    font-size: 0.88rem;
+    color: #6b7280;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f1f3;
+  }
+  .service-tags span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #4b5563;
+    font-weight: 500;
+  }
+  .service-tags span::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #E30613;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== PARTNERS SECTION ===== */
+  .partners {
+    padding: 80px 0;
+  }
+  .partners-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .partner-badge {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px 36px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .partner-badge:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .partner-badge .p-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .partner-badge .p-icon svg { width: 22px; height: 22px; }
+  .partner-badge .p-text strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .partner-badge .p-text span {
+    font-size: 0.78rem;
+    color: #E30613;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ===== INNOVATIONS SECTION ===== */
+  .innovations {
+    padding: 80px 0;
+  }
+  .innovations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .innovations-grid .inn-wide {
+    grid-column: span 2;
+  }
+  .inn-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .inn-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .inn-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #E30613, #ff4757);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .inn-card:hover::after { opacity: 1; }
+  .inn-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .inn-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .inn-icon.red { background: rgba(227,6,19,0.1); }
+  .inn-icon.red svg { fill: #E30613; }
+  .inn-icon svg { width: 22px; height: 22px; }
+  .inn-card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1a1a2e;
+  }
+  .inn-card .inn-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #E30613;
+    background: rgba(227,6,19,0.08);
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .inn-card p {
+    font-size: 0.92rem;
+    color: #6b7280;
+    line-height: 1.7;
+  }
+
+  /* ===== GEOGRAPHY SECTION ===== */
+  .geography {
+    padding: 60px 0 80px;
+  }
+  .geo-chips {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .geo-chip {
+    background: #fff;
+    border-radius: 100px;
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .geo-chip:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+  .geo-chip .flag { font-size: 1.3rem; }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid #e0e2e6;
+  }
+  .site-footer p {
+    font-size: 0.88rem;
+    color: #9ca3af;
+    font-weight: 500;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .innovations-grid { grid-template-columns: 1fr 1fr; }
+    .innovations-grid .inn-wide { grid-column: span 1; }
+  }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.2rem; }
+    .hero .subtitle { font-size: 1rem; }
+    .about-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { grid-template-columns: 1fr; }
+    .innovations-grid { grid-template-columns: 1fr; }
+    .innovations-grid .inn-wide { grid-column: span 1; }
+    .section-title h2 { font-size: 1.7rem; }
+    .partners-row { gap: 16px; }
+    .partner-badge { padding: 16px 20px; }
+  }
+  @media (max-width: 480px) {
+    .hero { padding: 60px 0 50px; }
+    .hero h1 { font-size: 1.8rem; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .geo-chips { gap: 8px; }
+    .geo-chip { padding: 10px 18px; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Metinvest Digital</div>
+      <h1>Про нас <span>Metinvest Digital</span></h1>
+      <p class="subtitle">Ми перетворюємо цифрові можливості на джерело зростання вартості бізнесу — від промислової автоматизації до інтелектуальних AI-рішень</p>
+      <div class="hero-decoration">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h3>Хто ми</h3>
+        <p><strong>Метінвест Діджитал</strong> — українська ІТ-компанія, яка спеціалізується на цифровій трансформації великого бізнесу. Заснована у 2018 році як єдиний ІТ бізнес-партнер Групи Метінвест.</p>
+        <p>Ми розробляємо, впроваджуємо і підтримуємо комплексні ІТ-рішення з побудови наземної та хмарної інфраструктури, розвитку інформаційних систем, системної інтеграції, управління великими даними, промислової автоматизації, кібербезпеки та штучного інтелекту.</p>
+        <p>Обслуговуємо понад 30 підприємств Метінвесту в Україні, Італії, Польщі, Болгарії, США та Великобританії, а також зовнішніх клієнтів у промисловості, телекомунікаціях, банківській сфері та енергетиці.</p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="mission-card">
+          <div class="mission-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h4>Наша місія</h4>
+          <p>Перетворювати цифрові можливості на джерело зростання вартості бізнесу по всьому ланцюжку: процеси — технології — кінцеві споживачі.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Ключові <span>факти та цифри</span></h2>
+      <p>Результати, якими ми пишаємося</p>
+    </div>
+    <div class="stats-grid">
+      <!-- 1 -->
+      <div class="stat-card reveal">
+        <div class="stat-icon red">
+          <svg viewBox="0 0 24 24" fill="#E30613"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div class="stat-number" data-target="800" data-suffix="+">0</div>
+        <div class="stat-label">спеціалістів</div>
+      </div>
+      <!-- 2 -->
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-icon dark">
+          <svg viewBox="0 0 24 24" fill="#1a1a2e"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+        </div>
+        <div class="stat-number" data-target="2018" data-suffix="">0</div>
+        <div class="stat-label">рік заснування</div>
+      </div>
+      <!-- 3 -->
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-icon red">
+          <svg viewBox="0 0 24 24" fill="#E30613"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </div>
+        <div class="stat-number" data-target="6" data-suffix="">0</div>
+        <div class="stat-label">країн присутності</div>
+      </div>
+      <!-- 4 -->
+      <div class="stat-card reveal">
+        <div class="stat-icon dark">
+          <svg viewBox="0 0 24 24" fill="#1a1a2e"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+        </div>
+        <div class="stat-number" data-target="30" data-suffix="+">0</div>
+        <div class="stat-label">підприємств Метінвесту</div>
+      </div>
+      <!-- 5 -->
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-icon red">
+          <svg viewBox="0 0 24 24" fill="#E30613"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>
+        </div>
+        <div class="stat-number" data-target="3000" data-suffix="+">0</div>
+        <div class="stat-label">сервісів та систем</div>
+      </div>
+      <!-- 6 -->
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-icon dark">
+          <svg viewBox="0 0 24 24" fill="#1a1a2e"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+        </div>
+        <div class="stat-number" data-target="5" data-prefix="TOP-" data-suffix="">0</div>
+        <div class="stat-label">ІТ-компаній України</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Ключові <span>напрямки</span></h2>
+      <p>Повний спектр End-to-End рішень для цифрової трансформації</p>
+    </div>
+    <div class="services-grid">
+      <!-- 1. SAP -->
+      <div class="service-card reveal">
+        <div class="service-icon-wrap red">
+          <svg viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        </div>
+        <h3>Рішення SAP</h3>
+        <p>Інтегровані рішення для фінансів, виробництва, логістики, HR — $52+ млн економічного ефекту</p>
+        <div class="service-tags">
+          <span>S/4HANA</span><span>SuccessFactors</span><span>Ariba</span>
+        </div>
+      </div>
+      <!-- 2. Microsoft -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon-wrap dark">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+        </div>
+        <h3>Рішення Microsoft</h3>
+        <p>Міграція 30 000+ користувачів у хмару, керування 25 000+ ПК, 50 000 облікових записів</p>
+        <div class="service-tags">
+          <span>Azure</span><span>M365</span><span>Power Platform</span>
+        </div>
+      </div>
+      <!-- 3. R&D -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon-wrap red">
+          <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+        </div>
+        <h3>R&D та ШІ</h3>
+        <p>Дослідження та впровадження інноваційних рішень на базі ML/AI, Computer Vision, LLM</p>
+        <div class="service-tags">
+          <span>Computer Vision</span><span>NLP / LLM</span><span>ML</span>
+        </div>
+      </div>
+      <!-- 4. Cloud -->
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon-wrap dark">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+        </div>
+        <h3>Хмарні рішення</h3>
+        <p>Впровадження та підтримка хмарних рішень IaaS, PaaS, SaaS для корпоративних клієнтів</p>
+        <div class="service-tags">
+          <span>IaaS</span><span>PaaS</span><span>SaaS</span>
+        </div>
+      </div>
+      <!-- 5. Cybersecurity -->
+      <div class="service-card reveal">
+        <div class="service-icon-wrap red">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+        </div>
+        <h3>Кібербезпека</h3>
+        <p>Побудова та супровід кіберзахисту: захист інфраструктури, IAM, моніторинг та реагування на інциденти</p>
+        <div class="service-tags">
+          <span>IAM</span><span>SOC</span><span>Аудит</span>
+        </div>
+      </div>
+      <!-- 6. Business Apps -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon-wrap dark">
+          <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        </div>
+        <h3>Бізнес-застосунки</h3>
+        <p>Корпоративні веб- та мобільні застосунки для автоматизації бізнесу, Legal Tech та юридичні сервіси</p>
+        <div class="service-tags">
+          <span>Legal Tech</span><span>CRM</span><span>ERP</span>
+        </div>
+      </div>
+      <!-- 7. Data -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon-wrap red">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        </div>
+        <h3>Управління даними</h3>
+        <p>Рішення з управління даними та аналітики: інтеграція, зберігання, Data Lake, DWH, консалтинг</p>
+        <div class="service-tags">
+          <span>Data Lake</span><span>DWH</span><span>BI</span>
+        </div>
+      </div>
+      <!-- 8. Infrastructure -->
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon-wrap dark">
+          <svg viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-7 4h-2v-2h2v2zm4 0h-2v-2h2v2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-7 4h-2V5h2v2zm4 0h-2V5h2v2z"/></svg>
+        </div>
+        <h3>Інфраструктурні рішення</h3>
+        <p>Розвиток та супровід ІТ-інфраструктури: моніторинг, SLA, ITSM/ITIL-практики</p>
+        <div class="service-tags">
+          <span>ITSM</span><span>SLA</span><span>Моніторинг</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INNOVATIONS ===== -->
+<section class="innovations">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Інноваційні <span>R&D продукти</span></h2>
+      <p>Рішення, розроблені нашою командою R&D</p>
+    </div>
+    <div class="innovations-grid">
+      <!-- SPAIS -->
+      <div class="inn-card inn-wide reveal">
+        <div class="inn-header">
+          <div class="inn-icon red">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </div>
+          <div>
+            <h3>SPAIS <span class="inn-tag">Computer Vision</span></h3>
+          </div>
+        </div>
+        <p>Система промислової безпеки на базі комп'ютерного зору. Аналізує відеопотоки з камер спостереження на виробничих об'єктах для виявлення порушень техніки безпеки, контролю засобів захисту та моніторингу небезпечних зон у реальному часі.</p>
+      </div>
+      <!-- Digital Legal Twin -->
+      <div class="inn-card reveal reveal-delay-1">
+        <div class="inn-header">
+          <div class="inn-icon red">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+          </div>
+          <div>
+            <h3>Digital Legal Twin <span class="inn-tag">AI / LLM</span></h3>
+          </div>
+        </div>
+        <p>Корпоративний AI-асистент юриста. Об'єднує юридичні знання компанії з офіційними зовнішніми джерелами в одну систему на базі Microsoft.</p>
+      </div>
+      <!-- MyOCR -->
+      <div class="inn-card reveal">
+        <div class="inn-header">
+          <div class="inn-icon red">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          </div>
+          <div>
+            <h3>MyOCR <span class="inn-tag">IDP</span></h3>
+          </div>
+        </div>
+        <p>Інтелектуальна платформа обробки документів. Обробляє 40 000+ сторінок на місяць на 7 підприємствах, зберігаючи 20 000+ годин на рік.</p>
+      </div>
+      <!-- ВЖИК -->
+      <div class="inn-card reveal reveal-delay-1">
+        <div class="inn-header">
+          <div class="inn-icon red">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          </div>
+          <div>
+            <h3>ВЖИК <span class="inn-tag">Logistics</span></h3>
+          </div>
+        </div>
+        <p>Платформа оптимізації логістики. Геокодування адрес, планування оптимальних маршрутів доставки та моніторинг транспорту.</p>
+      </div>
+      <!-- AI Translator -->
+      <div class="inn-card reveal reveal-delay-2">
+        <div class="inn-header">
+          <div class="inn-icon red">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+          </div>
+          <div>
+            <h3>AI Translator <span class="inn-tag">NLP</span></h3>
+          </div>
+        </div>
+        <p>Корпоративний AI-перекладач. Швидкий переклад текстів та документів зі збереженням форматування, навчений на корпоративній термінології.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PARTNERS ===== -->
+<section class="partners">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Екосистема <span>партнерів</span></h2>
+      <p>Стратегічні партнерства з глобальними технологічними лідерами</p>
+    </div>
+    <div class="partners-row reveal">
+      <div class="partner-badge">
+        <div class="p-icon" style="background: rgba(0,120,212,0.1);">
+          <svg viewBox="0 0 24 24" fill="#0078D4"><path d="M1 1h10v10H1V1zm12 0h10v10H13V1zM1 13h10v10H1V13zm12 0h10v10H13V13z"/></svg>
+        </div>
+        <div class="p-text"><strong>Microsoft</strong><span>Gold Partner</span></div>
+      </div>
+      <div class="partner-badge">
+        <div class="p-icon" style="background: rgba(0,103,177,0.1);">
+          <svg viewBox="0 0 24 24" fill="#0067B1"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.27 8 12 11.82 4.73 8 12 4.18zM4 9.04l7 3.47V19.5l-7-3.5V9.04zm10 10.46V12.51l7-3.47v6.96l-7 3.5z"/></svg>
+        </div>
+        <div class="p-text"><strong>SAP</strong><span>Silver Partner</span></div>
+      </div>
+      <div class="partner-badge">
+        <div class="p-icon" style="background: rgba(26,26,46,0.06);">
+          <svg viewBox="0 0 24 24" fill="#1a1a2e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="p-text"><strong>Cisco</strong><span>Partner</span></div>
+      </div>
+      <div class="partner-badge">
+        <div class="p-icon" style="background: rgba(0,171,79,0.1);">
+          <svg viewBox="0 0 24 24" fill="#00AB4F"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="p-text"><strong>Schneider Electric</strong><span>Partner</span></div>
+      </div>
+      <div class="partner-badge">
+        <div class="p-icon" style="background: rgba(0,159,170,0.1);">
+          <svg viewBox="0 0 24 24" fill="#009FAA"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="p-text"><strong>Siemens</strong><span>Partner</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GEOGRAPHY ===== -->
+<section class="geography">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Географія <span>присутності</span></h2>
+      <p>Обслуговуємо підприємства у 6 країнах</p>
+    </div>
+    <div class="geo-chips reveal">
+      <div class="geo-chip"><span class="flag">🇺🇦</span> Україна</div>
+      <div class="geo-chip"><span class="flag">🇮🇹</span> Італія</div>
+      <div class="geo-chip"><span class="flag">🇵🇱</span> Польща</div>
+      <div class="geo-chip"><span class="flag">🇧🇬</span> Болгарія</div>
+      <div class="geo-chip"><span class="flag">🇺🇸</span> США</div>
+      <div class="geo-chip"><span class="flag">🇬🇧</span> Великобританія</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <p>Metinvest Digital 2026</p>
+  </div>
+</footer>
+
+<script>
+  // ===== Scroll Reveal =====
+  const revealElements = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  // ===== Counter Animation =====
+  const counters = document.querySelectorAll('.stat-number');
+  let counterAnimated = new Set();
+
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const duration = 2000;
+    const start = performance.now();
+    const startVal = 0;
+
+    function easeOutQuart(t) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const current = Math.round(startVal + (target - startVal) * easeOutQuart(progress));
+
+      if (target >= 1000) {
+        el.textContent = prefix + current.toLocaleString('uk-UA') + suffix;
+      } else {
+        el.textContent = prefix + current + suffix;
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !counterAnimated.has(entry.target)) {
+        counterAnimated.add(entry.target);
+        animateCounter(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObserver.observe(c));
+</script>
+</body>
+</html>
