@@ -7,21 +7,158 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Demo-site top menu bar — integrates the Legal AI Assistant into the
+           Metinvest Digital demo suite. Scoped with the md- prefix so it never
+           collides with the app's own styles. */
+        .md-topbar {
+            position: sticky;
+            top: 16px;
+            z-index: 410;
+            margin: 16px 24px 0;
+            padding: 12px 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 24px;
+            background: var(--glass-bg);
+            -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+        }
+        .md-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+        .md-brand-mark {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #121316 0%, #3a3f47 50%, #e31e24 100%);
+            display: grid; place-items: center;
+            box-shadow: 0 6px 14px rgba(227, 30, 36, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .md-brand-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25); }
+        .md-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .md-brand-title { font-weight: 800; font-size: 16px; letter-spacing: 0.2px; color: var(--black); }
+        .md-brand-subtitle { font-size: 11px; color: var(--gray); letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; }
+
+        .md-nav {
+            justify-self: center;
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .md-nav-btn {
+            border: none; background: transparent;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            color: var(--gray);
+            font-size: 14px; font-weight: 500;
+            cursor: pointer; text-decoration: none;
+            transition: var(--transition);
+        }
+        .md-nav-btn:hover { color: var(--dark); background: rgba(255, 255, 255, 0.5); }
+        .md-nav-btn.active { background: var(--gradient-primary); color: #fff; box-shadow: 0 6px 16px rgba(227, 30, 36, 0.35); }
+
+        .md-topright { display: flex; align-items: center; gap: 12px; justify-self: end; }
+        .md-lang {
+            display: inline-flex; align-items: center; padding: 4px; gap: 2px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 999px;
+        }
+        .md-lang-btn {
+            border: none; background: transparent;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px; font-weight: 600;
+            color: var(--gray); cursor: pointer;
+            transition: var(--transition);
+        }
+        .md-lang-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(227, 30, 36, 0.35); }
+        .md-flag { width: 18px; height: 12px; display: inline-block; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); }
+        .md-flag-ua { background: linear-gradient(to bottom, #0057B7 0 50%, #FFD700 50% 100%); }
+        .md-flag-gb { background: #012169; overflow: hidden; }
+        .md-flag-gb svg { width: 100%; height: 100%; display: block; }
+
+        /* Fold the app's existing action icons into the integrated bar */
+        .md-topbar .top-actions { position: static; top: auto; right: auto; z-index: auto; }
+
+        @media (max-width: 980px) {
+            .md-topbar { grid-template-columns: auto auto; gap: 12px; }
+            .md-nav { grid-column: 1 / -1; order: 3; justify-self: stretch; justify-content: center; }
+        }
+        @media (max-width: 560px) {
+            .md-topbar { margin: 12px; padding: 10px 12px; }
+            .md-brand-text { display: none; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Minimal top actions: Notifications, Settings, Profile -->
-    <div class="top-actions">
-        <button class="top-action notifications" id="notificationsBtn" title="Сповіщення">
-            <i class="fas fa-bell"></i>
-            <span class="badge">5</span>
-        </button>
-        <button class="top-action" id="settingsBtn" title="Налаштування">
-            <i class="fas fa-cog"></i>
-        </button>
-        <button class="top-action user-profile" id="userProfile" title="Профіль">
-            <i class="fas fa-user"></i>
-        </button>
-    </div>
+    <!-- Demo-site top menu bar: keeps the Legal AI Assistant in step with the
+         rest of the Metinvest Digital demo suite. -->
+    <header class="md-topbar">
+        <a class="md-brand" href="../index.html">
+            <span class="md-brand-mark"><span class="md-brand-dot"></span></span>
+            <span class="md-brand-text">
+                <span class="md-brand-title">Metinvest Digital</span>
+                <span class="md-brand-subtitle">Демо рішень</span>
+            </span>
+        </a>
+
+        <nav class="md-nav">
+            <a class="md-nav-btn" href="../index.html">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M5 12a7 7 0 0 1 14 0"/><path d="M2 12a10 10 0 0 1 20 0"/></svg>
+                <span>Наживо</span>
+            </a>
+            <a class="md-nav-btn" href="#">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>
+                <span>Слайди</span>
+            </a>
+            <a class="md-nav-btn" href="../about.html">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+                <span>Про Нас</span>
+            </a>
+        </nav>
+
+        <div class="md-topright">
+            <div class="md-lang" role="tablist" aria-label="Language">
+                <button class="md-lang-btn active" data-lang="ua" role="tab" aria-selected="true">
+                    <span class="md-flag md-flag-ua" aria-hidden="true"></span>UA
+                </button>
+                <button class="md-lang-btn" data-lang="en" role="tab" aria-selected="false">
+                    <span class="md-flag md-flag-gb" aria-hidden="true">
+                        <svg viewBox="0 0 60 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="60" height="30" fill="#012169"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="3"/>
+                            <rect x="25" width="10" height="30" fill="#fff"/>
+                            <rect y="11" width="60" height="8" fill="#fff"/>
+                            <rect x="27" width="6" height="30" fill="#C8102E"/>
+                            <rect y="13" width="60" height="4" fill="#C8102E"/>
+                        </svg>
+                    </span>EN
+                </button>
+            </div>
+
+            <!-- App actions: Notifications, Settings, Profile -->
+            <div class="top-actions">
+                <button class="top-action notifications" id="notificationsBtn" title="Сповіщення">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </button>
+                <button class="top-action" id="settingsBtn" title="Налаштування">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="top-action user-profile" id="userProfile" title="Профіль">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
 
     <!-- Centered popups -->
     <div class="popup-overlay" id="popupOverlay"></div>
@@ -1130,5 +1267,18 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // Demo top-bar language switch — visual only for now; this app does not
+        // translate yet, but the selector stays in sync with the suite.
+        document.querySelectorAll('.md-lang-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.md-lang-btn').forEach(function (b) {
+                    var active = b === btn;
+                    b.classList.toggle('active', active);
+                    b.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
