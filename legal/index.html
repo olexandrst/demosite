@@ -84,9 +84,15 @@
         .md-flag-gb { background: #012169; overflow: hidden; }
         .md-flag-gb svg { width: 100%; height: 100%; display: block; }
 
-        /* Action icons live below the bar, aligned with the "Назад" row */
-        .main-content { position: relative; }
-        .main-content > .top-actions { position: absolute; top: 2rem; right: 2rem; }
+        /* Action icons float in the viewport's right gutter — in line with the
+           language selector and the chat button — so they never overlap the
+           in-screen controls (e.g. the "Додати джерело" button). */
+        .top-actions { position: fixed; top: 6.5rem; right: 2rem; }
+        @media (max-width: 980px) {
+            /* On narrow screens the gutter collapses and the bar grows taller;
+               stack the icons above the chat button instead. */
+            .top-actions { top: auto; bottom: 6rem; right: 1.25rem; }
+        }
 
         /* Profile is merged into the Settings modal: place the close button
            inside the red profile header. */
