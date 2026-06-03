@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Minimal top actions: Notifications, Settings, Profile -->
+    <div class="top-actions">
+        <button class="top-action notifications" id="notificationsBtn" title="Сповіщення">
+            <i class="fas fa-bell"></i>
+            <span class="badge">5</span>
+        </button>
+        <button class="top-action" id="settingsBtn" title="Налаштування">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button class="top-action user-profile" id="userProfile" title="Профіль">
+            <i class="fas fa-user"></i>
+        </button>
+    </div>
+
+    <!-- Centered popups -->
+    <div class="popup-overlay" id="popupOverlay"></div>
+
+    <div class="popup-modal notifications-dropdown" id="notificationsDropdown" role="dialog" aria-modal="true">
+                    <div class="dropdown-header">
+                        <h4>Сповіщення</h4>
+                        <div class="dropdown-header-actions">
+                            <a href="#" class="mark-all-read">Позначити всі як прочитані</a>
+                            <button class="popup-close" data-close-popup title="Закрити"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="notifications-list">
+                        <div class="notification-item unread" data-route="ticket" data-ticket="TK-2026-0089">
+                            <div class="notification-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="notification-text">Новий тікет від <strong>Іван Коваленко</strong> потребує розгляду</p>
+                                <span class="notification-time">10 хвилин тому</span>
+                            </div>
+                        </div>
+                        <div class="notification-item unread" data-route="dispatcher">
+                            <div class="notification-icon info">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="notification-text">ШІ класифікував <strong>3 нових тікети</strong> до категорії "Трудові відносини"</p>
+                                <span class="notification-time">25 хвилин тому</span>
+                            </div>
+                        </div>
+                        <div class="notification-item unread" data-route="ticket" data-ticket="TK-2026-0089">
+                            <div class="notification-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="notification-text">Термін відповіді на тікет <strong>#TK-2026-0089</strong> спливає через 2 години</p>
+                                <span class="notification-time">1 годину тому</span>
+                            </div>
+                        </div>
+                        <div class="notification-item" data-route="tickets">
+                            <div class="notification-icon success">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="notification-text">Комплаєнс-перевірка для <strong>ТОВ "АГРО-ПРО"</strong> завершена</p>
+                                <span class="notification-time">Вчора, 18:45</span>
+                            </div>
+                        </div>
+                        <div class="notification-item" data-route="data-sources">
+                            <div class="notification-icon info">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="notification-content">
+                                <p class="notification-text">Джерело даних <strong>"Реєстр судових рішень"</strong> оновлено</p>
+                                <span class="notification-time">Вчора, 14:20</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dropdown-footer">
+                        <a href="#" id="viewAllNotifications">Переглянути всі сповіщення</a>
+                    </div>
+    </div>
+
+    <div class="popup-modal profile-dropdown" id="profileDropdown" role="dialog" aria-modal="true">
+                    <div class="profile-dropdown-header">
+                        <button class="popup-close" data-close-popup title="Закрити"><i class="fas fa-times"></i></button>
+                        <div class="profile-avatar-large">
+                            <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=80" alt="User">
+                        </div>
+                        <div class="profile-details">
+                            <h4>Олена Петренко</h4>
+                            <p>olena.petrenko@company.ua</p>
+                            <span class="profile-badge"><i class="fas fa-shield-alt"></i> Юридичний відділ</span>
+                        </div>
+                    </div>
+                    <div class="profile-dropdown-menu">
+                        <a href="#" class="profile-menu-item" data-action="my-profile">
+                            <i class="fas fa-user"></i>
+                            <span>Мій профіль</span>
+                        </a>
+                        <a href="#" class="profile-menu-item" data-action="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Налаштування</span>
+                        </a>
+                        <a href="#" class="profile-menu-item" data-action="help">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Довідка</span>
+                        </a>
+                        <div class="profile-menu-divider"></div>
+                        <a href="#" class="profile-menu-item logout" data-action="logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Вийти з системи</span>
+                        </a>
+                    </div>
+    </div>
+
+    <div class="popup-modal settings-modal" id="settingsModal" role="dialog" aria-modal="true">
+        <div class="settings-modal-header">
+            <h4><i class="fas fa-cog"></i> Налаштування</h4>
+            <button class="popup-close" data-close-popup title="Закрити"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="settings-modal-body">
+            <div class="settings-row">
+                <div class="settings-row-label"><i class="fas fa-moon"></i><span>Темна тема</span></div>
+                <label class="switch"><input type="checkbox" id="themeSwitch"><span class="switch-slider"></span></label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-label"><i class="fas fa-language"></i><span>Мова інтерфейсу</span></div>
+                <div class="settings-seg">
+                    <button class="seg active" data-lang="ua">UA</button>
+                    <button class="seg" data-lang="en">EN</button>
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-label"><i class="fas fa-envelope"></i><span>Сповіщення на пошту</span></div>
+                <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-label"><i class="fas fa-shield-alt"></i><span>Двофакторна автентифікація</span></div>
+                <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Screen - 3 Main Tiles -->
+        <section id="homeScreen" class="screen active">
+            <div class="welcome-section">
+                <div class="home-brand">
+                    <span class="home-brand-mark"><i class="fas fa-balance-scale"></i></span>
+                    <h1>Legal AI Assistant</h1>
+                </div>
+                <p>Оберіть категорію для початку роботи з ШІ-асистентом</p>
+            </div>
+
+            <div class="tiles-grid main-tiles">
+                <!-- Tile 1: Legal Service Clients -->
+                <div class="tile main-tile" data-tile="legal-clients">
+                    <button class="tile-favorite" data-favorite="legal-clients" title="Додати в обране">
+                        <i class="far fa-star"></i>
+                    </button>
+                    <div class="tile-icon tile-icon-large">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Клієнтам юридичної служби</h3>
+                    <p>Пошук відповідей на юридичні питання для клієнтів юридичної служби</p>
+                    <div class="tile-footer">
+                        <span class="tile-stat tile-stat-left"><i class="fas fa-robot"></i> ШІ-асистент</span>
+                        <span class="tile-stat tile-stat-right"><i class="fas fa-book"></i> База знань</span>
+                    </div>
+                </div>
+
+                <!-- Tile 2: Lawyer Cabinet -->
+                <div class="tile main-tile" data-tile="lawyer-cabinet">
+                    <button class="tile-favorite" data-favorite="lawyer-cabinet" title="Додати в обране">
+                        <i class="far fa-star"></i>
+                    </button>
+                    <div class="tile-icon tile-icon-large" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Кабінет юриста</h3>
+                    <p>Управління тікетами, диспетчеризація звернень та налаштування джерел даних</p>
+                    <div class="tile-footer">
+                        <span class="tile-stat tile-stat-left"><i class="fas fa-ticket-alt"></i> 12 активних</span>
+                        <span class="tile-stat tile-stat-right"><i class="fas fa-clock"></i> 3 термінових</span>
+                    </div>
+                </div>
+
+                <!-- Tile 3: Other Departments -->
+                <div class="tile main-tile" data-tile="other-departments">
+                    <button class="tile-favorite" data-favorite="other-departments" title="Додати в обране">
+                        <i class="far fa-star"></i>
+                    </button>
+                    <div class="tile-icon tile-icon-large" style="background: linear-gradient(135deg, #3a3f47 0%, #1a1d22 100%);">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Кабінети інших підрозділів</h3>
+                    <p>Спеціалізовані інструменти для суміжних підрозділів компанії</p>
+                    <div class="tile-footer">
+                        <span class="tile-stat tile-stat-left"><i class="fas fa-users-cog"></i> 3 модулі</span>
+                        <span class="tile-stat tile-stat-right"><i class="fas fa-chart-line"></i> Аналітика</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-info">
+                        <span class="stat-value">2.5 сек</span>
+                        <span class="stat-label">Середній час відповіді ШІ</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-double"></i>
+                    <div class="stat-info">
+                        <span class="stat-value">98.7%</span>
+                        <span class="stat-label">Точність класифікації</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-ticket-alt"></i>
+                    <div class="stat-info">
+                        <span class="stat-value">156</span>
+                        <span class="stat-label">Оброблено тікетів сьогодні</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sub-tiles Screen (for main tiles) -->
+        <section id="subTilesScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="subTilesBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2 id="subTilesTitle"></h2>
+            </div>
+            <div class="tiles-grid sub-tiles" id="subTilesGrid">
+                <!-- Sub-tiles will be rendered here -->
+            </div>
+        </section>
+
+        <!-- AI Agent Question Screen (1.1) -->
+        <section id="aiAgentScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="aiAgentBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-robot"></i> Поставити питання ШІ агенту</h2>
+            </div>
+
+            <div class="ai-agent-container">
+                <div class="ai-prompt-section">
+                    <div class="ai-prompt-header">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби:</span>
+                    </div>
+                    <div class="search-box ai-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="aiSearchInput" placeholder="Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби...">
+                        <button class="search-btn" id="aiSearchBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="suggestions-section">
+                    <h4><i class="fas fa-lightbulb"></i> Приклади питань:</h4>
+                    <div class="suggestions-list">
+                        <div class="suggestion-item" data-suggestion="salary-bank">
+                            <i class="fas fa-university"></i>
+                            <span>Чи може працівник вільно обирати банк для отримання заробітної плати?</span>
+                        </div>
+                        <div class="suggestion-item" data-suggestion="credit-card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Чи має право банк примусово оформити кредитну картку до заробітної плати працівника?</span>
+                        </div>
+                        <div class="suggestion-item" data-suggestion="bank-control">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Чи має банк право контролювати напрям використання грошових коштів клієнта?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="aiAnswerContainer" class="ai-answer-container" style="display: none;">
+                    <div class="ai-answer-header">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-answer-meta">
+                            <span class="ai-label">Відповідь ШІ-агента</span>
+                            <span class="ai-timestamp" id="aiTimestamp"></span>
+                        </div>
+                    </div>
+                    <div class="ai-answer-content" id="aiAnswerContent">
+                        <!-- AI answer will be rendered here -->
+                    </div>
+                    <div class="ai-answer-footer">
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn like" title="Корисно">
+                                <i class="fas fa-thumbs-up"></i>
+                            </button>
+                            <button class="feedback-btn dislike" title="Не корисно">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                        </div>
+                        <div class="ai-answer-actions">
+                            <button class="btn-escalate" id="escalateToLawyerBtn">
+                                <i class="fas fa-user-tie"></i> Направити запит юристу
+                            </button>
+                            <button class="btn-secondary" id="newQuestionBtn">
+                                <i class="fas fa-plus"></i> Нове питання
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Internal Documents Screen (1.2) -->
+        <section id="internalDocsScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="internalDocsBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-folder-open"></i> Пошук по внутрішніх документах. База локальних регламентуючих документів</h2>
+            </div>
+
+            <div class="search-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="docsSearchInput" placeholder="Робота в контексті документів підрозділу">
+                    <button class="search-btn" id="docsSearchBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <p class="search-hint">
+                    <span class="example-link" id="docsExampleLink">Наприклад: Які вимоги до документу з Бізнес-вимогами</span>
+                </p>
+            </div>
+
+            <div id="docsSearchResults" class="search-results" style="display: none;">
+                <div class="results-header">
+                    <h3><i class="fas fa-list-ul"></i> Результати пошуку</h3>
+                    <span class="results-count" id="docsResultsCount"></span>
+                </div>
+                <div id="docsResultsContainer" class="results-container"></div>
+            </div>
+        </section>
+
+        <!-- Legal Knowledge Base Screen (1.3) -->
+        <section id="knowledgeBaseScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="knowledgeBaseBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-book"></i> Пошук по базі юридичних знань</h2>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-search">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="faqSearchInput" placeholder="Пошук у базі знань...">
+                    </div>
+                </div>
+
+                <div class="faq-categories">
+                    <button class="faq-category active" data-category="all">Всі</button>
+                    <button class="faq-category" data-category="labor">Трудове право</button>
+                    <button class="faq-category" data-category="contracts">Договори</button>
+                    <button class="faq-category" data-category="corporate">Корпоративне</button>
+                    <button class="faq-category" data-category="compliance">Комплаєнс</button>
+                </div>
+
+                <div class="faq-list" id="faqList">
+                    <!-- FAQ items will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- My Tickets Screen (2.1) -->
+        <section id="myTicketsScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="myTicketsBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-ticket-alt"></i> Мої тікети</h2>
+                <div class="screen-header-spacer"></div>
+            </div>
+
+            <div class="tickets-stats">
+                <div class="ticket-stat-card active" data-filter="all">
+                    <div class="ticket-stat-icon all"><i class="fas fa-layer-group"></i></div>
+                    <div class="ticket-stat-info">
+                        <span class="ticket-stat-value">8</span>
+                        <span class="ticket-stat-label">Всього</span>
+                    </div>
+                </div>
+                <div class="ticket-stat-card" data-filter="new">
+                    <div class="ticket-stat-icon new"><i class="fas fa-inbox"></i></div>
+                    <div class="ticket-stat-info">
+                        <span class="ticket-stat-value">5</span>
+                        <span class="ticket-stat-label">Нових</span>
+                    </div>
+                </div>
+                <div class="ticket-stat-card" data-filter="in-progress">
+                    <div class="ticket-stat-icon progress"><i class="fas fa-spinner"></i></div>
+                    <div class="ticket-stat-info">
+                        <span class="ticket-stat-value">8</span>
+                        <span class="ticket-stat-label">В роботі</span>
+                    </div>
+                </div>
+                <div class="ticket-stat-card" data-filter="waiting">
+                    <div class="ticket-stat-icon waiting"><i class="fas fa-clock"></i></div>
+                    <div class="ticket-stat-info">
+                        <span class="ticket-stat-value">3</span>
+                        <span class="ticket-stat-label">Очікують</span>
+                    </div>
+                </div>
+                <div class="ticket-stat-card" data-filter="resolved">
+                    <div class="ticket-stat-icon resolved"><i class="fas fa-check-circle"></i></div>
+                    <div class="ticket-stat-info">
+                        <span class="ticket-stat-value">24</span>
+                        <span class="ticket-stat-label">Вирішених</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tickets-list-container" id="myTicketsList">
+                <!-- Tickets will be rendered here -->
+            </div>
+        </section>
+
+        <!-- Ticket Detail Screen -->
+        <section id="ticketDetailScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="ticketDetailBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>До списку тікетів</span>
+                </button>
+                <div class="ticket-actions">
+                    <button class="btn-secondary" id="assignTicketBtn"><i class="fas fa-user-plus"></i> Призначити</button>
+                    <button class="btn-primary" id="resolveTicketBtn"><i class="fas fa-check"></i> Вирішити</button>
+                </div>
+            </div>
+
+            <div class="ticket-detail-container">
+                <div class="ticket-detail-main">
+                    <div class="ticket-detail-header" id="ticketDetailHeader">
+                        <!-- Ticket header will be rendered here -->
+                    </div>
+                    <div class="ticket-detail-body" id="ticketDetailBody">
+                        <!-- Ticket content will be rendered here -->
+                    </div>
+                    <div class="ticket-reply-section">
+                        <h4>Відповісти на звернення</h4>
+                        <textarea id="ticketReplyInput" placeholder="Введіть вашу відповідь..."></textarea>
+                        <div class="reply-actions">
+                            <button class="btn-secondary"><i class="fas fa-paperclip"></i> Прикріпити файл</button>
+                            <button class="btn-primary" id="sendReplyBtn"><i class="fas fa-paper-plane"></i> Надіслати відповідь</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket-detail-sidebar" id="ticketDetailSidebar">
+                    <!-- Ticket sidebar info will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Ticket Dispatcher Screen (2.2) -->
+        <section id="dispatcherScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="dispatcherBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-random"></i> Диспетчер тікетів</h2>
+            </div>
+
+            <div class="ai-classification-banner">
+                <div class="ai-banner-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="ai-banner-content">
+                    <h4>Автоматична класифікація ШІ</h4>
+                    <p>Система автоматично аналізує та розподіляє вхідні звернення за категоріями</p>
+                </div>
+                <div class="ai-banner-stats">
+                    <span><i class="fas fa-check-circle"></i> 156 класифіковано сьогодні</span>
+                    <span><i class="fas fa-percentage"></i> 98.7% точність</span>
+                </div>
+            </div>
+
+            <div class="dispatcher-categories" id="dispatcherCategories">
+                <!-- Categories will be rendered here -->
+            </div>
+        </section>
+
+        <!-- Data Sources Screen (2.3) -->
+        <section id="dataSourcesScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="dataSourcesBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-database"></i> Джерела даних</h2>
+                <button class="btn-primary" id="addSourceBtn"><i class="fas fa-plus"></i> Додати джерело</button>
+            </div>
+
+            <div class="data-sources-container">
+                <div class="sources-section">
+                    <h3><i class="fas fa-building"></i> Внутрішні джерела</h3>
+                    <div class="sources-list" id="internalSourcesList">
+                        <!-- Internal sources will be rendered here -->
+                    </div>
+                </div>
+
+                <div class="sources-section">
+                    <h3><i class="fas fa-globe"></i> Зовнішні джерела</h3>
+                    <div class="sources-list" id="externalSourcesList">
+                        <!-- External sources will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HR Dashboard Screen (3.1) -->
+        <section id="hrDashboardScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="hrDashboardBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-users"></i> HR та рекрутинг</h2>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-stats">
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #f5232a 0%, #c30f17 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">1,247</span>
+                            <span class="dashboard-stat-label">Загальна кількість працівників</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">23</span>
+                            <span class="dashboard-stat-label">Нових цього місяця</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #3a3f47 0%, #1a1d22 100%);">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">15</span>
+                            <span class="dashboard-stat-label">Відкритих вакансій</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #f5232a 0%, #c30f17 100%);">
+                            <i class="fas fa-user-minus"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">5</span>
+                            <span class="dashboard-stat-label">Звільнень цього місяця</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-widgets">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h4><i class="fas fa-chart-pie"></i> Розподіл за підрозділами</h4>
+                        </div>
+                        <div class="widget-content" id="hrDepartmentChart">
+                            <div class="department-item">
+                                <span class="dept-name">Юридичний відділ</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 15%;"></div></div>
+                                <span class="dept-count">187</span>
+                            </div>
+                            <div class="department-item">
+                                <span class="dept-name">IT департамент</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 22%;"></div></div>
+                                <span class="dept-count">274</span>
+                            </div>
+                            <div class="department-item">
+                                <span class="dept-name">Фінанси</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 12%;"></div></div>
+                                <span class="dept-count">150</span>
+                            </div>
+                            <div class="department-item">
+                                <span class="dept-name">HR</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 8%;"></div></div>
+                                <span class="dept-count">100</span>
+                            </div>
+                            <div class="department-item">
+                                <span class="dept-name">Виробництво</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 35%;"></div></div>
+                                <span class="dept-count">436</span>
+                            </div>
+                            <div class="department-item">
+                                <span class="dept-name">Інші</span>
+                                <div class="dept-bar"><div class="dept-fill" style="width: 8%;"></div></div>
+                                <span class="dept-count">100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h4><i class="fas fa-clipboard-list"></i> Активні вакансії</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="vacancy-item">
+                                <div class="vacancy-info">
+                                    <span class="vacancy-title">Senior Legal Counsel</span>
+                                    <span class="vacancy-dept">Юридичний відділ</span>
+                                </div>
+                                <span class="vacancy-applicants">12 кандидатів</span>
+                            </div>
+                            <div class="vacancy-item">
+                                <div class="vacancy-info">
+                                    <span class="vacancy-title">Full Stack Developer</span>
+                                    <span class="vacancy-dept">IT департамент</span>
+                                </div>
+                                <span class="vacancy-applicants">28 кандидатів</span>
+                            </div>
+                            <div class="vacancy-item">
+                                <div class="vacancy-info">
+                                    <span class="vacancy-title">Financial Analyst</span>
+                                    <span class="vacancy-dept">Фінанси</span>
+                                </div>
+                                <span class="vacancy-applicants">8 кандидатів</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finance Screen (3.2) -->
+        <section id="financeScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="financeBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-chart-line"></i> Фінанси</h2>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-stats">
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">₴ 45.2M</span>
+                            <span class="dashboard-stat-label">Дохід за місяць</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #f5232a 0%, #c30f17 100%);">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">₴ 32.8M</span>
+                            <span class="dashboard-stat-label">Витрати за місяць</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #f5232a 0%, #c30f17 100%);">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">₴ 12.4M</span>
+                            <span class="dashboard-stat-label">Чистий прибуток</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #3a3f47 0%, #1a1d22 100%);">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">156</span>
+                            <span class="dashboard-stat-label">Рахунків до оплати</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-widgets">
+                    <div class="widget wide">
+                        <div class="widget-header">
+                            <h4><i class="fas fa-file-invoice"></i> Останні транзакції</h4>
+                        </div>
+                        <div class="widget-content">
+                            <table class="finance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Опис</th>
+                                        <th>Контрагент</th>
+                                        <th>Сума</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>03.02.2026</td>
+                                        <td>Оплата за послуги</td>
+                                        <td>ТОВ "Консалт Груп"</td>
+                                        <td class="amount negative">-₴ 125,000</td>
+                                        <td><span class="status-badge success">Сплачено</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>02.02.2026</td>
+                                        <td>Надходження за договором</td>
+                                        <td>АТ "Укрбуд"</td>
+                                        <td class="amount positive">+₴ 450,000</td>
+                                        <td><span class="status-badge success">Отримано</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>01.02.2026</td>
+                                        <td>Орендна плата</td>
+                                        <td>ТОВ "Бізнес Центр"</td>
+                                        <td class="amount negative">-₴ 85,000</td>
+                                        <td><span class="status-badge warning">Очікує</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>31.01.2026</td>
+                                        <td>Заробітна плата</td>
+                                        <td>Працівники</td>
+                                        <td class="amount negative">-₴ 2,450,000</td>
+                                        <td><span class="status-badge success">Сплачено</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Procurement Screen (3.3) -->
+        <section id="procurementScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="procurementBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                <h2><i class="fas fa-shopping-cart"></i> Закупівлі</h2>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-stats">
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #f5232a 0%, #c30f17 100%);">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">34</span>
+                            <span class="dashboard-stat-label">Активних тендерів</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">156</span>
+                            <span class="dashboard-stat-label">Постачальників</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #3a3f47 0%, #1a1d22 100%);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">12</span>
+                            <span class="dashboard-stat-label">Очікують погодження</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="dashboard-stat-icon" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="dashboard-stat-info">
+                            <span class="dashboard-stat-value">8</span>
+                            <span class="dashboard-stat-label">Очікують поставки</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-widgets">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h4><i class="fas fa-gavel"></i> Активні тендери</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="tender-item">
+                                <div class="tender-info">
+                                    <span class="tender-title">Закупівля IT обладнання</span>
+                                    <span class="tender-deadline">До 15.02.2026</span>
+                                </div>
+                                <span class="tender-budget">₴ 2.5M</span>
+                            </div>
+                            <div class="tender-item">
+                                <div class="tender-info">
+                                    <span class="tender-title">Канцелярські товари на 2026</span>
+                                    <span class="tender-deadline">До 20.02.2026</span>
+                                </div>
+                                <span class="tender-budget">₴ 350K</span>
+                            </div>
+                            <div class="tender-item">
+                                <div class="tender-info">
+                                    <span class="tender-title">Послуги з охорони</span>
+                                    <span class="tender-deadline">До 28.02.2026</span>
+                                </div>
+                                <span class="tender-budget">₴ 1.2M</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h4><i class="fas fa-users"></i> Топ постачальники</h4>
+                        </div>
+                        <div class="widget-content">
+                            <div class="supplier-item">
+                                <div class="supplier-info">
+                                    <span class="supplier-name">ТОВ "СФЕРА-М"</span>
+                                    <span class="supplier-category">Засоби захисту</span>
+                                </div>
+                                <div class="supplier-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.9</span>
+                                </div>
+                            </div>
+                            <div class="supplier-item">
+                                <div class="supplier-info">
+                                    <span class="supplier-name">АТ "ТехноПостач"</span>
+                                    <span class="supplier-category">IT обладнання</span>
+                                </div>
+                                <div class="supplier-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.8</span>
+                                </div>
+                            </div>
+                            <div class="supplier-item">
+                                <div class="supplier-info">
+                                    <span class="supplier-name">ТОВ "Офіс-Сервіс"</span>
+                                    <span class="supplier-category">Канцелярія</span>
+                                </div>
+                                <div class="supplier-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span>4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Document Detail Screen -->
+        <section id="documentScreen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="docBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>До результатів</span>
+                </button>
+                <div class="doc-actions">
+                    <button class="action-btn"><i class="fas fa-bookmark"></i></button>
+                    <button class="action-btn"><i class="fas fa-share-alt"></i></button>
+                    <button class="action-btn"><i class="fas fa-print"></i></button>
+                </div>
+            </div>
+
+            <div class="document-content">
+                <div class="doc-header">
+                    <div class="doc-source" id="docSource"></div>
+                    <h2 id="docTitle"></h2>
+                    <div class="doc-meta" id="docMeta"></div>
+                </div>
+                <div class="doc-body" id="docBody"></div>
+                <div class="doc-footer">
+                    <a href="#" class="source-link" id="sourceLink">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Перейти до джерела</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Favorites Screen -->
+        <section id="favoritesScreen" class="screen">
+            <div class="screen-header">
+                <h2><i class="fas fa-star"></i> Обране</h2>
+            </div>
+            <div class="favorites-content">
+                <div id="favoritesGrid" class="tiles-grid favorites-grid"></div>
+                <div id="emptyFavorites" class="empty-state">
+                    <div class="empty-icon">
+                        <i class="far fa-star"></i>
+                    </div>
+                    <h3>Немає обраних розділів</h3>
+                    <p>Додайте розділи в обране, натиснувши на зірочку на головній сторінці</p>
+                    <button class="btn-primary" id="goToHomeBtn">
+                        <i class="fas fa-home"></i>
+                        <span>Перейти на головну</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Screen -->
+        <section id="historyScreen" class="screen">
+            <div class="screen-header">
+                <h2><i class="fas fa-history"></i> Історія активності</h2>
+            </div>
+            <div class="history-timeline">
+                <div class="timeline-section">
+                    <div class="timeline-date">Сьогодні, 3 лютого 2026</div>
+                    <div class="timeline-items">
+                        <div class="timeline-item">
+                            <div class="timeline-icon search">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>Запит до ШІ: "Чи може працівник обирати банк для зарплати"</h4>
+                                <p>Поставити питання ШІ агенту • Отримано відповідь</p>
+                                <span class="timeline-time">10:34</span>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon ticket">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>Відповідь на тікет #TK-2026-0087</h4>
+                                <p>Мої тікети • Трудові відносини</p>
+                                <span class="timeline-time">09:48</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Screen -->
+        <section id="profileScreen" class="screen">
+            <div class="profile-page">
+                <div class="profile-sidebar">
+                    <div class="profile-card">
+                        <div class="profile-card-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=120" alt="User">
+                        </div>
+                        <h3>Олена Петренко</h3>
+                        <p class="profile-card-role">Старший юрисконсульт</p>
+                        <p class="profile-card-dept"><i class="fas fa-building"></i> Юридичний відділ</p>
+                    </div>
+                    <div class="profile-nav">
+                        <a href="#" class="profile-nav-item active" data-section="personal">
+                            <i class="fas fa-user"></i> Особисті дані
+                        </a>
+                        <a href="#" class="profile-nav-item" data-section="security">
+                            <i class="fas fa-lock"></i> Безпека
+                        </a>
+                        <a href="#" class="profile-nav-item" data-section="preferences">
+                            <i class="fas fa-sliders-h"></i> Налаштування
+                        </a>
+                    </div>
+                </div>
+                <div class="profile-main">
+                    <div class="profile-section" id="personalSection">
+                        <div class="section-header">
+                            <h2>Особисті дані</h2>
+                        </div>
+                        <div class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Прізвище</label>
+                                    <input type="text" value="Петренко" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ім'я</label>
+                                    <input type="text" value="Олена" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" value="olena.petrenko@company.ua" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Телефон</label>
+                                    <input type="tel" value="+380 67 123 45 67" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-section" id="securitySection" style="display: none;">
+                        <div class="section-header">
+                            <h2>Безпека</h2>
+                        </div>
+                        <div class="security-options">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <h4><i class="fas fa-key"></i> Пароль</h4>
+                                    <p>Останнє оновлення: 15 грудня 2025</p>
+                                </div>
+                                <button class="btn-secondary">Змінити пароль</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-section" id="preferencesSection" style="display: none;">
+                        <div class="section-header">
+                            <h2>Налаштування</h2>
+                        </div>
+                        <div class="preferences-options">
+                            <div class="preference-group">
+                                <h4>Тема оформлення</h4>
+                                <div class="theme-options">
+                                    <label class="theme-option active">
+                                        <input type="radio" name="theme" value="light" checked>
+                                        <span class="theme-preview light"></span>
+                                        <span>Світла</span>
+                                    </label>
+                                    <label class="theme-option">
+                                        <input type="radio" name="theme" value="dark">
+                                        <span class="theme-preview dark"></span>
+                                        <span>Темна</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- AI Chat Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-toggle" id="chatToggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Асистент</span>
+                </div>
+                <button class="chat-close" id="chatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-content">
+                        Вітаю! Я ваш AI асистент. Чим можу допомогти?
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Введіть повідомлення..." id="chatInput">
+                <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Source Modal -->
+    <div class="modal" id="addSourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Додати джерело даних</h3>
+                <button class="modal-close" id="closeAddSourceModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Назва джерела</label>
+                    <input type="text" id="sourceNameInput" placeholder="Введіть назву...">
+                </div>
+                <div class="form-group">
+                    <label>Тип джерела</label>
+                    <select id="sourceTypeSelect">
+                        <option value="internal">Внутрішнє</option>
+                        <option value="external">Зовнішнє</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>URL або шлях</label>
+                    <input type="text" id="sourceUrlInput" placeholder="https:// або //sharepoint/...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelAddSource">Скасувати</button>
+                <button class="btn-primary" id="confirmAddSource">Додати</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Аналізуємо запит...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
