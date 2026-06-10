@@ -1,25 +1,68 @@
+/* Theme palette. The default values are the "mid" (Metinvest Digital)
+   theme; [data-theme="itp"] below overrides them with the neutral
+   grey-green theme. theme.js sets the attribute on <html>. */
 :root {
-  --red: #e30613;
-  --red-soft: #ff3b4a;
-  --red-deep: #b30410;
+  --accent: #e30613;
+  --accent-soft: #ff4757;
+  --accent-deep: #b30410;
+  --accent-rgb: 227, 6, 19;
   --black: #0d0d12;
   --ink: #1a1a22;
+  --about-ink: #1a1a2e;
+  --about-ink-rgb: 26, 26, 46;
   --grey-900: #2a2a33;
   --grey-700: #51515f;
   --grey-500: #8a8a96;
   --grey-300: #c8c8cf;
   --grey-100: #eef0f4;
   --bg: #f3f4f7;
+  --bg-grad-a: rgba(13, 13, 18, 0.06);
+  --bg-grad-b: rgba(227, 6, 19, 0.04);
+  --bg-top: #f7f8fb;
+  --bg-bottom: #eceef3;
+  --wash: #eceef2;
+  --wash-dot: rgba(180, 184, 194, 0.45);
+  --orb-accent: #ff6b78;
   --white: #ffffff;
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-bg-strong: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.7);
   --glass-shadow: 0 10px 30px rgba(20, 20, 35, 0.08), 0 2px 6px rgba(20, 20, 35, 0.04);
-  --glass-shadow-hover: 0 18px 50px rgba(227, 6, 19, 0.18), 0 4px 12px rgba(20, 20, 35, 0.06);
+  --glass-shadow-hover: 0 18px 50px rgba(var(--accent-rgb), 0.18), 0 4px 12px rgba(20, 20, 35, 0.06);
   --radius-lg: 22px;
   --radius-md: 16px;
   --radius-sm: 10px;
   --ease: cubic-bezier(.2, .8, .2, 1);
+  /* Legacy aliases kept for solution pages that reuse this stylesheet. */
+  --red: var(--accent);
+  --red-soft: var(--accent-soft);
+  --red-deep: var(--accent-deep);
+}
+
+/* Neutral grey-green eco theme. */
+[data-theme="itp"] {
+  --accent: #5f8575;
+  --accent-soft: #8fb3a1;
+  --accent-deep: #46685a;
+  --accent-rgb: 95, 133, 117;
+  --black: #141c18;
+  --ink: #1e2922;
+  --about-ink: #1f2a24;
+  --about-ink-rgb: 31, 42, 36;
+  --grey-900: #2b362f;
+  --grey-700: #5a6a60;
+  --grey-500: #8e9c93;
+  --grey-300: #c8d2cb;
+  --grey-100: #eef2ee;
+  --bg: #f3f6f2;
+  --bg-grad-a: rgba(20, 28, 24, 0.05);
+  --bg-grad-b: rgba(95, 133, 117, 0.07);
+  --bg-top: #f6f9f4;
+  --bg-bottom: #e9efe8;
+  --wash: #e9efe9;
+  --wash-dot: rgba(166, 182, 170, 0.5);
+  --orb-accent: #9cc0ad;
+  --glass-shadow: 0 10px 30px rgba(24, 34, 28, 0.08), 0 2px 6px rgba(24, 34, 28, 0.04);
 }
 
 * { box-sizing: border-box; }
@@ -37,9 +80,9 @@ html, body {
 
 body {
   background:
-    radial-gradient(900px 500px at 110% 10%, rgba(13, 13, 18, 0.06), transparent 60%),
-    radial-gradient(700px 400px at 50% 110%, rgba(227, 6, 19, 0.04), transparent 60%),
-    linear-gradient(180deg, #f7f8fb 0%, #eceef3 100%);
+    radial-gradient(900px 500px at 110% 10%, var(--bg-grad-a), transparent 60%),
+    radial-gradient(700px 400px at 50% 110%, var(--bg-grad-b), transparent 60%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -66,7 +109,7 @@ body {
 }
 .orb-3 {
   width: 280px; height: 280px;
-  background: radial-gradient(circle, #ff6b78 0%, transparent 70%);
+  background: radial-gradient(circle, var(--orb-accent) 0%, transparent 70%);
   top: 60%; right: 18%;
   opacity: 0.10;
 }
@@ -109,11 +152,11 @@ body {
 .brand-mark {
   width: 40px; height: 40px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--black) 0%, var(--grey-900) 50%, var(--red) 100%);
+  background: linear-gradient(135deg, var(--black) 0%, var(--grey-900) 50%, var(--accent) 100%);
   display: grid;
   place-items: center;
   position: relative;
-  box-shadow: 0 6px 14px rgba(227, 6, 19, 0.30), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 6px 14px rgba(var(--accent-rgb), 0.30), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 .brand-dot {
   width: 10px; height: 10px;
@@ -152,20 +195,22 @@ body {
 }
 .nav-btn:hover { color: var(--ink); background: rgba(255,255,255,0.5); }
 .nav-btn.active {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
   color: var(--white);
-  box-shadow: 0 6px 16px rgba(227, 6, 19, 0.35);
+  box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.35);
 }
 
 .topright { display: flex; align-items: center; gap: 12px; }
 
-.lang-switch {
+.lang-switch,
+.theme-switch {
   display: inline-flex;
   align-items: center;
   padding: 4px;
   gap: 2px;
 }
-.lang-btn {
+.lang-btn,
+.theme-btn {
   border: none;
   background: transparent;
   display: inline-flex;
@@ -179,10 +224,11 @@ body {
   cursor: pointer;
   transition: all 0.2s var(--ease);
 }
-.lang-btn.active {
-  background: var(--red);
+.lang-btn.active,
+.theme-btn.active {
+  background: var(--accent);
   color: var(--white);
-  box-shadow: 0 4px 10px rgba(227, 6, 19, 0.35);
+  box-shadow: 0 4px 10px rgba(var(--accent-rgb), 0.35);
 }
 .flag {
   width: 18px; height: 12px;
@@ -223,7 +269,7 @@ body {
   gap: 10px;
 }
 .hero-title .accent {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -253,18 +299,18 @@ body {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
   opacity: 0;
   transition: opacity 0.35s var(--ease);
 }
 .tile:hover {
   transform: translateY(-6px);
   box-shadow: var(--glass-shadow-hover);
-  border-color: rgba(227, 6, 19, 0.35);
+  border-color: rgba(var(--accent-rgb), 0.35);
 }
 .tile:hover::before { opacity: 1; }
 .tile:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -277,8 +323,8 @@ body {
   box-shadow: 0 10px 24px rgba(20,20,35,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 .icon-red {
-  background: linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
-  box-shadow: 0 10px 24px rgba(227, 6, 19, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  box-shadow: 0 10px 24px rgba(var(--accent-rgb), 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 .icon-dark {
   background: linear-gradient(135deg, var(--ink) 0%, var(--black) 100%);
@@ -302,8 +348,8 @@ body {
   transition: all 0.25s var(--ease);
   border: 1px solid rgba(255,255,255,0.9);
 }
-.tile-fav:hover { color: var(--red); transform: scale(1.08); }
-.tile-fav.active { color: var(--red); background: rgba(227, 6, 19, 0.12); }
+.tile-fav:hover { color: var(--accent); transform: scale(1.08); }
+.tile-fav.active { color: var(--accent); background: rgba(var(--accent-rgb), 0.12); }
 
 .tile-title {
   font-size: 18px;
@@ -339,7 +385,7 @@ body {
   border-radius: 999px;
 }
 .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-.dot-red { background: var(--red); box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.15); }
+.dot-red { background: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15); }
 .dot-grey { background: var(--grey-500); box-shadow: 0 0 0 3px rgba(138, 138, 150, 0.15); }
 
 /* ---------- footer ---------- */
