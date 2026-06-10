@@ -201,8 +201,9 @@
     },
 
     /* ------------------------------------------------------------------
-       "itp" — neutral white-label theme with a calm grey-blue palette
-       and fictional, vendor-neutral About Us content.
+       "itp" — neutral white-label theme with a modern mobile-OS-style
+       palette (iOS system blue) and fictional, vendor-neutral About Us
+       content.
        ------------------------------------------------------------------ */
     itp: {
       label: "ITP",
