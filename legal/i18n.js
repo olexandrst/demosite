@@ -219,6 +219,9 @@
       el.setAttribute("value", v);
       if ("value" in el) el.value = v;
     });
+    document.querySelectorAll("[data-i18n-src]").forEach(function (el) {
+      el.setAttribute("src", t(el.getAttribute("data-i18n-src")));
+    });
   }
 
   /* Reflect the active language on both switchers and wire them up. The
