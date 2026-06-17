@@ -393,7 +393,7 @@
   };
 
   const STORAGE_KEY = "mdigital.theme";
-  const DEFAULT_THEME = "mid";
+  const DEFAULT_THEME = "itp";
 
   function resolveTheme() {
     try {
