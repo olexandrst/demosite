@@ -202,15 +202,13 @@ body {
 
 .topright { display: flex; align-items: center; gap: 12px; }
 
-.lang-switch,
-.theme-switch {
+.lang-switch {
   display: inline-flex;
   align-items: center;
   padding: 4px;
   gap: 2px;
 }
-.lang-btn,
-.theme-btn {
+.lang-btn {
   border: none;
   background: transparent;
   display: inline-flex;
@@ -224,8 +222,7 @@ body {
   cursor: pointer;
   transition: all 0.2s var(--ease);
 }
-.lang-btn.active,
-.theme-btn.active {
+.lang-btn.active {
   background: var(--accent);
   color: var(--white);
   box-shadow: 0 4px 10px rgba(var(--accent-rgb), 0.35);

@@ -88,16 +88,9 @@ document.querySelectorAll(".lang-btn").forEach((btn) => {
   btn.addEventListener("click", () => applyLang(btn.dataset.lang));
 });
 
-// Theme switcher (themes are presentation-only: colours, branding and
-// About page content — see theme.js)
-document.querySelectorAll(".theme-btn").forEach((btn) => {
-  const active = btn.dataset.theme === window.SITE_THEME_NAME;
-  btn.classList.toggle("active", active);
-  btn.setAttribute("aria-selected", active ? "true" : "false");
-  btn.addEventListener("click", () => {
-    if (window.setSiteTheme) window.setSiteTheme(btn.dataset.theme);
-  });
-});
+// The theme is presentation-only (colours, branding and About page content —
+// see theme.js). It defaults to "itp" and can be overridden with the
+// ?theme=<name> URL parameter; there is no in-page theme switcher.
 
 // Counter values on the About page are owned by the active theme
 (function applyThemeStats() {
