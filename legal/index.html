@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="../theme.js"></script>
     <style>
         /* Demo-site top menu bar — integrates the Legal AI Assistant into the
            Metinvest Digital demo suite. Scoped with the md- prefix so it never
@@ -111,6 +112,22 @@
             .md-topbar { margin: 12px; padding: 10px 12px; }
             .md-brand-text { display: none; }
         }
+
+        /* Suite-topbar accents for the mobile-OS-style "itp" theme
+           (set on <html> by ../theme.js). Only the shared chrome is themed —
+           the Legal app's own styles stay untouched. */
+        html[data-theme="itp"] .md-brand-mark {
+            background: linear-gradient(135deg, #111113 0%, #2c2c2e 50%, #007aff 100%);
+            box-shadow: 0 6px 14px rgba(0, 122, 255, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        html[data-theme="itp"] .md-nav-btn.active {
+            background: linear-gradient(135deg, #007aff 0%, #0055d4 100%);
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.35);
+        }
+        html[data-theme="itp"] .md-lang-btn.active {
+            background: #007aff;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.35);
+        }
     </style>
 </head>
 <body>
@@ -167,10 +184,10 @@
 
     <div class="popup-modal notifications-dropdown" id="notificationsDropdown" role="dialog" aria-modal="true">
                     <div class="dropdown-header">
-                        <h4>Сповіщення</h4>
+                        <h4 data-i18n="notif.title">Сповіщення</h4>
                         <div class="dropdown-header-actions">
-                            <a href="#" class="mark-all-read">Позначити всі як прочитані</a>
-                            <button class="popup-close" data-close-popup title="Закрити"><i class="fas fa-times"></i></button>
+                            <a href="#" class="mark-all-read" data-i18n="notif.markAll">Позначити всі як прочитані</a>
+                            <button class="popup-close" data-close-popup title="Закрити" data-i18n-title="btn.close"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                     <div class="notifications-list">
@@ -179,8 +196,8 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                             <div class="notification-content">
-                                <p class="notification-text">Новий тікет від <strong>Іван Коваленко</strong> потребує розгляду</p>
-                                <span class="notification-time">10 хвилин тому</span>
+                                <p class="notification-text" data-i18n="notif.item1">Новий тікет від <strong>Іван Коваленко</strong> потребує розгляду</p>
+                                <span class="notification-time" data-i18n="notif.time1">10 хвилин тому</span>
                             </div>
                         </div>
                         <div class="notification-item unread" data-route="dispatcher">
@@ -188,8 +205,8 @@
                                 <i class="fas fa-robot"></i>
                             </div>
                             <div class="notification-content">
-                                <p class="notification-text">ШІ класифікував <strong>3 нових тікети</strong> до категорії "Трудові відносини"</p>
-                                <span class="notification-time">25 хвилин тому</span>
+                                <p class="notification-text" data-i18n="notif.item2">ШІ класифікував <strong>3 нових тікети</strong> до категорії "Трудові відносини"</p>
+                                <span class="notification-time" data-i18n="notif.time2">25 хвилин тому</span>
                             </div>
                         </div>
                         <div class="notification-item unread" data-route="ticket" data-ticket="TK-2026-0089">
@@ -197,8 +214,8 @@
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
                             <div class="notification-content">
-                                <p class="notification-text">Термін відповіді на тікет <strong>#TK-2026-0089</strong> спливає через 2 години</p>
-                                <span class="notification-time">1 годину тому</span>
+                                <p class="notification-text" data-i18n="notif.item3">Термін відповіді на тікет <strong>#TK-2026-0089</strong> спливає через 2 години</p>
+                                <span class="notification-time" data-i18n="notif.time3">1 годину тому</span>
                             </div>
                         </div>
                         <div class="notification-item" data-route="tickets">
@@ -206,8 +223,8 @@
                                 <i class="fas fa-user-check"></i>
                             </div>
                             <div class="notification-content">
-                                <p class="notification-text">Комплаєнс-перевірка для <strong>ТОВ "АГРО-ПРО"</strong> завершена</p>
-                                <span class="notification-time">Вчора, 18:45</span>
+                                <p class="notification-text" data-i18n="notif.item4">Комплаєнс-перевірка для <strong>ТОВ "АГРО-ПРО"</strong> завершена</p>
+                                <span class="notification-time" data-i18n="notif.time4">Вчора, 18:45</span>
                             </div>
                         </div>
                         <div class="notification-item" data-route="data-sources">
@@ -215,62 +232,62 @@
                                 <i class="fas fa-database"></i>
                             </div>
                             <div class="notification-content">
-                                <p class="notification-text">Джерело даних <strong>"Реєстр судових рішень"</strong> оновлено</p>
-                                <span class="notification-time">Вчора, 14:20</span>
+                                <p class="notification-text" data-i18n="notif.item5">Джерело даних <strong>"Реєстр судових рішень"</strong> оновлено</p>
+                                <span class="notification-time" data-i18n="notif.time5">Вчора, 14:20</span>
                             </div>
                         </div>
                     </div>
                     <div class="dropdown-footer">
-                        <a href="#" id="viewAllNotifications">Переглянути всі сповіщення</a>
+                        <a href="#" id="viewAllNotifications" data-i18n="notif.viewAll">Переглянути всі сповіщення</a>
                     </div>
     </div>
 
     <div class="popup-modal settings-modal" id="settingsModal" role="dialog" aria-modal="true">
         <div class="profile-dropdown-header">
-            <button class="popup-close" data-close-popup title="Закрити"><i class="fas fa-times"></i></button>
+            <button class="popup-close" data-close-popup title="Закрити" data-i18n-title="btn.close"><i class="fas fa-times"></i></button>
             <div class="profile-avatar-large">
-                <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=80" alt="User">
+                <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=80" data-i18n-src="profile.avatarSettings" alt="User">
             </div>
             <div class="profile-details">
-                <h4>Олена Петренко</h4>
+                <h4 data-i18n="profile.name">Олена Петренко</h4>
                 <p>olena.petrenko@company.ua</p>
-                <span class="profile-badge"><i class="fas fa-shield-alt"></i> Юридичний відділ</span>
+                <span class="profile-badge" data-i18n="profile.deptBadge"><i class="fas fa-shield-alt"></i> Юридичний відділ</span>
             </div>
         </div>
         <div class="settings-modal-body">
             <div class="settings-row">
-                <div class="settings-row-label"><i class="fas fa-moon"></i><span>Темна тема</span></div>
+                <div class="settings-row-label"><i class="fas fa-moon"></i><span data-i18n="settings.darkTheme">Темна тема</span></div>
                 <label class="switch"><input type="checkbox" id="themeSwitch"><span class="switch-slider"></span></label>
             </div>
             <div class="settings-row">
-                <div class="settings-row-label"><i class="fas fa-language"></i><span>Мова інтерфейсу</span></div>
+                <div class="settings-row-label"><i class="fas fa-language"></i><span data-i18n="settings.language">Мова інтерфейсу</span></div>
                 <div class="settings-seg">
                     <button class="seg active" data-lang="ua">UA</button>
                     <button class="seg" data-lang="en">EN</button>
                 </div>
             </div>
             <div class="settings-row">
-                <div class="settings-row-label"><i class="fas fa-envelope"></i><span>Сповіщення на пошту</span></div>
+                <div class="settings-row-label"><i class="fas fa-envelope"></i><span data-i18n="settings.emailNotif">Сповіщення на пошту</span></div>
                 <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
             </div>
             <div class="settings-row">
-                <div class="settings-row-label"><i class="fas fa-shield-alt"></i><span>Двофакторна автентифікація</span></div>
+                <div class="settings-row-label"><i class="fas fa-shield-alt"></i><span data-i18n="settings.twoFactor">Двофакторна автентифікація</span></div>
                 <label class="switch"><input type="checkbox" checked><span class="switch-slider"></span></label>
             </div>
         </div>
         <div class="profile-dropdown-menu">
             <a href="#" class="profile-menu-item" data-action="my-profile">
                 <i class="fas fa-user"></i>
-                <span>Мій профіль</span>
+                <span data-i18n="profile.menuMyProfile">Мій профіль</span>
             </a>
             <a href="#" class="profile-menu-item" data-action="help">
                 <i class="fas fa-question-circle"></i>
-                <span>Довідка</span>
+                <span data-i18n="profile.menuHelp">Довідка</span>
             </a>
             <div class="profile-menu-divider"></div>
             <a href="#" class="profile-menu-item logout" data-action="logout">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>Вийти з системи</span>
+                <span data-i18n="profile.menuLogout">Вийти з системи</span>
             </a>
         </div>
     </div>
@@ -279,11 +296,11 @@
     <main class="main-content">
         <!-- App actions, aligned with the "Назад" row on the right -->
         <div class="top-actions">
-            <button class="top-action notifications" id="notificationsBtn" title="Сповіщення">
+            <button class="top-action notifications" id="notificationsBtn" title="Сповіщення" data-i18n-title="notif.title">
                 <i class="fas fa-bell"></i>
                 <span class="badge">5</span>
             </button>
-            <button class="top-action" id="settingsBtn" title="Налаштування та профіль">
+            <button class="top-action" id="settingsBtn" title="Налаштування та профіль" data-i18n-title="settings.titleAttr">
                 <i class="fas fa-cog"></i>
             </button>
         </div>
@@ -294,55 +311,55 @@
                     <span class="home-brand-mark"><i class="fas fa-balance-scale"></i></span>
                     <h1>Legal AI Assistant</h1>
                 </div>
-                <p>Оберіть категорію для початку роботи з ШІ-асистентом</p>
+                <p data-i18n="home.subtitle">Оберіть категорію для початку роботи з ШІ-асистентом</p>
             </div>
 
             <div class="tiles-grid main-tiles">
                 <!-- Tile 1: Legal Service Clients -->
                 <div class="tile main-tile" data-tile="legal-clients">
-                    <button class="tile-favorite" data-favorite="legal-clients" title="Додати в обране">
+                    <button class="tile-favorite" data-favorite="legal-clients" title="Додати в обране" data-i18n-title="btn.addFavorite">
                         <i class="far fa-star"></i>
                     </button>
                     <div class="tile-icon tile-icon-large">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3>Клієнтам юридичної служби</h3>
-                    <p>Пошук відповідей на юридичні питання для клієнтів юридичної служби</p>
+                    <h3 data-i18n="home.tile1.title">Клієнтам юридичної служби</h3>
+                    <p data-i18n="home.tile1.desc">Пошук відповідей на юридичні питання для клієнтів юридичної служби</p>
                     <div class="tile-footer">
-                        <span class="tile-stat tile-stat-left"><i class="fas fa-robot"></i> ШІ-асистент</span>
-                        <span class="tile-stat tile-stat-right"><i class="fas fa-book"></i> База знань</span>
+                        <span class="tile-stat tile-stat-left" data-i18n="home.tile1.stat1"><i class="fas fa-robot"></i> ШІ-асистент</span>
+                        <span class="tile-stat tile-stat-right" data-i18n="home.tile1.stat2"><i class="fas fa-book"></i> База знань</span>
                     </div>
                 </div>
 
                 <!-- Tile 2: Lawyer Cabinet -->
                 <div class="tile main-tile" data-tile="lawyer-cabinet">
-                    <button class="tile-favorite" data-favorite="lawyer-cabinet" title="Додати в обране">
+                    <button class="tile-favorite" data-favorite="lawyer-cabinet" title="Додати в обране" data-i18n-title="btn.addFavorite">
                         <i class="far fa-star"></i>
                     </button>
                     <div class="tile-icon tile-icon-large" style="background: linear-gradient(135deg, #2b2f37 0%, #121316 100%);">
                         <i class="fas fa-briefcase"></i>
                     </div>
-                    <h3>Кабінет юриста</h3>
-                    <p>Управління тікетами, диспетчеризація звернень та налаштування джерел даних</p>
+                    <h3 data-i18n="home.tile2.title">Кабінет юриста</h3>
+                    <p data-i18n="home.tile2.desc">Управління тікетами, диспетчеризація звернень та налаштування джерел даних</p>
                     <div class="tile-footer">
-                        <span class="tile-stat tile-stat-left"><i class="fas fa-ticket-alt"></i> 12 активних</span>
-                        <span class="tile-stat tile-stat-right"><i class="fas fa-clock"></i> 3 термінових</span>
+                        <span class="tile-stat tile-stat-left" data-i18n="home.tile2.stat1"><i class="fas fa-ticket-alt"></i> 12 активних</span>
+                        <span class="tile-stat tile-stat-right" data-i18n="home.tile2.stat2"><i class="fas fa-clock"></i> 3 термінових</span>
                     </div>
                 </div>
 
                 <!-- Tile 3: Other Departments -->
                 <div class="tile main-tile" data-tile="other-departments">
-                    <button class="tile-favorite" data-favorite="other-departments" title="Додати в обране">
+                    <button class="tile-favorite" data-favorite="other-departments" title="Додати в обране" data-i18n-title="btn.addFavorite">
                         <i class="far fa-star"></i>
                     </button>
                     <div class="tile-icon tile-icon-large" style="background: linear-gradient(135deg, #3a3f47 0%, #1a1d22 100%);">
                         <i class="fas fa-building"></i>
                     </div>
-                    <h3>Кабінети інших підрозділів</h3>
-                    <p>Спеціалізовані інструменти для суміжних підрозділів компанії</p>
+                    <h3 data-i18n="home.tile3.title">Кабінети інших підрозділів</h3>
+                    <p data-i18n="home.tile3.desc">Спеціалізовані інструменти для суміжних підрозділів компанії</p>
                     <div class="tile-footer">
-                        <span class="tile-stat tile-stat-left"><i class="fas fa-users-cog"></i> 3 модулі</span>
-                        <span class="tile-stat tile-stat-right"><i class="fas fa-chart-line"></i> Аналітика</span>
+                        <span class="tile-stat tile-stat-left" data-i18n="home.tile3.stat1"><i class="fas fa-users-cog"></i> 3 модулі</span>
+                        <span class="tile-stat tile-stat-right" data-i18n="home.tile3.stat2"><i class="fas fa-chart-line"></i> Аналітика</span>
                     </div>
                 </div>
             </div>
@@ -351,22 +368,22 @@
                 <div class="stat-card">
                     <i class="fas fa-clock"></i>
                     <div class="stat-info">
-                        <span class="stat-value">2.5 сек</span>
-                        <span class="stat-label">Середній час відповіді ШІ</span>
+                        <span class="stat-value" data-i18n="home.stat1.value">2.5 сек</span>
+                        <span class="stat-label" data-i18n="home.stat1.label">Середній час відповіді ШІ</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-check-double"></i>
                     <div class="stat-info">
                         <span class="stat-value">98.7%</span>
-                        <span class="stat-label">Точність класифікації</span>
+                        <span class="stat-label" data-i18n="home.stat2.label">Точність класифікації</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-ticket-alt"></i>
                     <div class="stat-info">
                         <span class="stat-value">156</span>
-                        <span class="stat-label">Оброблено тікетів сьогодні</span>
+                        <span class="stat-label" data-i18n="home.stat3.label">Оброблено тікетів сьогодні</span>
                     </div>
                 </div>
             </div>
@@ -377,7 +394,7 @@
             <div class="screen-header">
                 <button class="back-btn" id="subTilesBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
                 <h2 id="subTilesTitle"></h2>
             </div>
@@ -391,20 +408,20 @@
             <div class="screen-header">
                 <button class="back-btn" id="aiAgentBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-robot"></i> Поставити питання ШІ агенту</h2>
+                <h2 data-i18n="screen.aiAgent.title"><i class="fas fa-robot"></i> Поставити питання ШІ агенту</h2>
             </div>
 
             <div class="ai-agent-container">
                 <div class="ai-prompt-section">
                     <div class="ai-prompt-header">
                         <i class="fas fa-comment-dots"></i>
-                        <span>Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби:</span>
+                        <span data-i18n="screen.aiAgent.prompt">Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби:</span>
                     </div>
                     <div class="search-box ai-search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="aiSearchInput" placeholder="Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби...">
+                        <input type="text" id="aiSearchInput" placeholder="Сформулюйте питання на яке має відповісти ШІ агент замість юридичної служби..." data-i18n-placeholder="screen.aiAgent.placeholder">
                         <button class="search-btn" id="aiSearchBtn">
                             <i class="fas fa-paper-plane"></i>
                         </button>
@@ -412,19 +429,19 @@
                 </div>
 
                 <div class="suggestions-section">
-                    <h4><i class="fas fa-lightbulb"></i> Приклади питань:</h4>
+                    <h4 data-i18n="screen.aiAgent.examplesTitle"><i class="fas fa-lightbulb"></i> Приклади питань:</h4>
                     <div class="suggestions-list">
                         <div class="suggestion-item" data-suggestion="salary-bank">
                             <i class="fas fa-university"></i>
-                            <span>Чи може працівник вільно обирати банк для отримання заробітної плати?</span>
+                            <span data-i18n="screen.aiAgent.example1">Чи може працівник вільно обирати банк для отримання заробітної плати?</span>
                         </div>
                         <div class="suggestion-item" data-suggestion="credit-card">
                             <i class="fas fa-credit-card"></i>
-                            <span>Чи має право банк примусово оформити кредитну картку до заробітної плати працівника?</span>
+                            <span data-i18n="screen.aiAgent.example2">Чи має право банк примусово оформити кредитну картку до заробітної плати працівника?</span>
                         </div>
                         <div class="suggestion-item" data-suggestion="bank-control">
                             <i class="fas fa-hand-holding-usd"></i>
-                            <span>Чи має банк право контролювати напрям використання грошових коштів клієнта?</span>
+                            <span data-i18n="screen.aiAgent.example3">Чи має банк право контролювати напрям використання грошових коштів клієнта?</span>
                         </div>
                     </div>
                 </div>
@@ -435,7 +452,7 @@
                             <i class="fas fa-robot"></i>
                         </div>
                         <div class="ai-answer-meta">
-                            <span class="ai-label">Відповідь ШІ-агента</span>
+                            <span class="ai-label" data-i18n="screen.aiAgent.answerLabel">Відповідь ШІ-агента</span>
                             <span class="ai-timestamp" id="aiTimestamp"></span>
                         </div>
                     </div>
@@ -444,18 +461,18 @@
                     </div>
                     <div class="ai-answer-footer">
                         <div class="feedback-buttons">
-                            <button class="feedback-btn like" title="Корисно">
+                            <button class="feedback-btn like" title="Корисно" data-i18n-title="btn.helpful">
                                 <i class="fas fa-thumbs-up"></i>
                             </button>
-                            <button class="feedback-btn dislike" title="Не корисно">
+                            <button class="feedback-btn dislike" title="Не корисно" data-i18n-title="btn.notHelpful">
                                 <i class="fas fa-thumbs-down"></i>
                             </button>
                         </div>
                         <div class="ai-answer-actions">
-                            <button class="btn-escalate" id="escalateToLawyerBtn">
+                            <button class="btn-escalate" id="escalateToLawyerBtn" data-i18n="btn.escalateToLawyer">
                                 <i class="fas fa-user-tie"></i> Направити запит юристу
                             </button>
-                            <button class="btn-secondary" id="newQuestionBtn">
+                            <button class="btn-secondary" id="newQuestionBtn" data-i18n="btn.newQuestion">
                                 <i class="fas fa-plus"></i> Нове питання
                             </button>
                         </div>
@@ -469,27 +486,27 @@
             <div class="screen-header">
                 <button class="back-btn" id="internalDocsBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-folder-open"></i> Пошук по внутрішніх документах. База локальних регламентуючих документів</h2>
+                <h2 data-i18n="screen.internalDocs.title"><i class="fas fa-folder-open"></i> Пошук по внутрішніх документах. База локальних регламентуючих документів</h2>
             </div>
 
             <div class="search-section">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="docsSearchInput" placeholder="Робота в контексті документів підрозділу">
+                    <input type="text" id="docsSearchInput" placeholder="Робота в контексті документів підрозділу" data-i18n-placeholder="screen.internalDocs.placeholder">
                     <button class="search-btn" id="docsSearchBtn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
                 <p class="search-hint">
-                    <span class="example-link" id="docsExampleLink">Наприклад: Які вимоги до документу з Бізнес-вимогами</span>
+                    <span class="example-link" id="docsExampleLink" data-i18n="screen.internalDocs.example">Наприклад: Які вимоги до документу з Бізнес-вимогами</span>
                 </p>
             </div>
 
             <div id="docsSearchResults" class="search-results" style="display: none;">
                 <div class="results-header">
-                    <h3><i class="fas fa-list-ul"></i> Результати пошуку</h3>
+                    <h3 data-i18n="screen.internalDocs.resultsTitle"><i class="fas fa-list-ul"></i> Результати пошуку</h3>
                     <span class="results-count" id="docsResultsCount"></span>
                 </div>
                 <div id="docsResultsContainer" class="results-container"></div>
@@ -501,25 +518,25 @@
             <div class="screen-header">
                 <button class="back-btn" id="knowledgeBaseBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-book"></i> Пошук по базі юридичних знань</h2>
+                <h2 data-i18n="screen.knowledgeBase.title"><i class="fas fa-book"></i> Пошук по базі юридичних знань</h2>
             </div>
 
             <div class="faq-container">
                 <div class="faq-search">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="faqSearchInput" placeholder="Пошук у базі знань...">
+                        <input type="text" id="faqSearchInput" placeholder="Пошук у базі знань..." data-i18n-placeholder="screen.knowledgeBase.placeholder">
                     </div>
                 </div>
 
                 <div class="faq-categories">
-                    <button class="faq-category active" data-category="all">Всі</button>
-                    <button class="faq-category" data-category="labor">Трудове право</button>
-                    <button class="faq-category" data-category="contracts">Договори</button>
-                    <button class="faq-category" data-category="corporate">Корпоративне</button>
-                    <button class="faq-category" data-category="compliance">Комплаєнс</button>
+                    <button class="faq-category active" data-category="all" data-i18n="faq.cat.all">Всі</button>
+                    <button class="faq-category" data-category="labor" data-i18n="faq.cat.labor">Трудове право</button>
+                    <button class="faq-category" data-category="contracts" data-i18n="faq.cat.contracts">Договори</button>
+                    <button class="faq-category" data-category="corporate" data-i18n="faq.cat.corporate">Корпоративне</button>
+                    <button class="faq-category" data-category="compliance" data-i18n="faq.cat.compliance">Комплаєнс</button>
                 </div>
 
                 <div class="faq-list" id="faqList">
@@ -533,9 +550,9 @@
             <div class="screen-header">
                 <button class="back-btn" id="myTicketsBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-ticket-alt"></i> Мої тікети</h2>
+                <h2 data-i18n="screen.myTickets.title"><i class="fas fa-ticket-alt"></i> Мої тікети</h2>
                 <div class="screen-header-spacer"></div>
             </div>
 
@@ -544,35 +561,35 @@
                     <div class="ticket-stat-icon all"><i class="fas fa-layer-group"></i></div>
                     <div class="ticket-stat-info">
                         <span class="ticket-stat-value">8</span>
-                        <span class="ticket-stat-label">Всього</span>
+                        <span class="ticket-stat-label" data-i18n="ticket.stat.all">Всього</span>
                     </div>
                 </div>
                 <div class="ticket-stat-card" data-filter="new">
                     <div class="ticket-stat-icon new"><i class="fas fa-inbox"></i></div>
                     <div class="ticket-stat-info">
                         <span class="ticket-stat-value">5</span>
-                        <span class="ticket-stat-label">Нових</span>
+                        <span class="ticket-stat-label" data-i18n="ticket.stat.new">Нових</span>
                     </div>
                 </div>
                 <div class="ticket-stat-card" data-filter="in-progress">
                     <div class="ticket-stat-icon progress"><i class="fas fa-spinner"></i></div>
                     <div class="ticket-stat-info">
                         <span class="ticket-stat-value">8</span>
-                        <span class="ticket-stat-label">В роботі</span>
+                        <span class="ticket-stat-label" data-i18n="ticket.stat.inProgress">В роботі</span>
                     </div>
                 </div>
                 <div class="ticket-stat-card" data-filter="waiting">
                     <div class="ticket-stat-icon waiting"><i class="fas fa-clock"></i></div>
                     <div class="ticket-stat-info">
                         <span class="ticket-stat-value">3</span>
-                        <span class="ticket-stat-label">Очікують</span>
+                        <span class="ticket-stat-label" data-i18n="ticket.stat.waiting">Очікують</span>
                     </div>
                 </div>
                 <div class="ticket-stat-card" data-filter="resolved">
                     <div class="ticket-stat-icon resolved"><i class="fas fa-check-circle"></i></div>
                     <div class="ticket-stat-info">
                         <span class="ticket-stat-value">24</span>
-                        <span class="ticket-stat-label">Вирішених</span>
+                        <span class="ticket-stat-label" data-i18n="ticket.stat.resolved">Вирішених</span>
                     </div>
                 </div>
             </div>
@@ -587,11 +604,11 @@
             <div class="screen-header">
                 <button class="back-btn" id="ticketDetailBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>До списку тікетів</span>
+                    <span data-i18n="ticket.backToList">До списку тікетів</span>
                 </button>
                 <div class="ticket-actions">
-                    <button class="btn-secondary" id="assignTicketBtn"><i class="fas fa-user-plus"></i> Призначити</button>
-                    <button class="btn-primary" id="resolveTicketBtn"><i class="fas fa-check"></i> Вирішити</button>
+                    <button class="btn-secondary" id="assignTicketBtn" data-i18n="btn.assign"><i class="fas fa-user-plus"></i> Призначити</button>
+                    <button class="btn-primary" id="resolveTicketBtn" data-i18n="btn.resolve"><i class="fas fa-check"></i> Вирішити</button>
                 </div>
             </div>
 
@@ -604,11 +621,11 @@
                         <!-- Ticket content will be rendered here -->
                     </div>
                     <div class="ticket-reply-section">
-                        <h4>Відповісти на звернення</h4>
-                        <textarea id="ticketReplyInput" placeholder="Введіть вашу відповідь..."></textarea>
+                        <h4 data-i18n="ticket.replyTitle">Відповісти на звернення</h4>
+                        <textarea id="ticketReplyInput" placeholder="Введіть вашу відповідь..." data-i18n-placeholder="ticket.replyPlaceholder"></textarea>
                         <div class="reply-actions">
-                            <button class="btn-secondary"><i class="fas fa-paperclip"></i> Прикріпити файл</button>
-                            <button class="btn-primary" id="sendReplyBtn"><i class="fas fa-paper-plane"></i> Надіслати відповідь</button>
+                            <button class="btn-secondary" data-i18n="btn.attachFile"><i class="fas fa-paperclip"></i> Прикріпити файл</button>
+                            <button class="btn-primary" id="sendReplyBtn" data-i18n="btn.sendReply"><i class="fas fa-paper-plane"></i> Надіслати відповідь</button>
                         </div>
                     </div>
                 </div>
@@ -623,9 +640,9 @@
             <div class="screen-header">
                 <button class="back-btn" id="dispatcherBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-random"></i> Диспетчер тікетів</h2>
+                <h2 data-i18n="screen.dispatcher.title"><i class="fas fa-random"></i> Диспетчер тікетів</h2>
             </div>
 
             <div class="ai-classification-banner">
@@ -633,12 +650,12 @@
                     <i class="fas fa-robot"></i>
                 </div>
                 <div class="ai-banner-content">
-                    <h4>Автоматична класифікація ШІ</h4>
-                    <p>Система автоматично аналізує та розподіляє вхідні звернення за категоріями</p>
+                    <h4 data-i18n="screen.dispatcher.bannerTitle">Автоматична класифікація ШІ</h4>
+                    <p data-i18n="screen.dispatcher.bannerDesc">Система автоматично аналізує та розподіляє вхідні звернення за категоріями</p>
                 </div>
                 <div class="ai-banner-stats">
-                    <span><i class="fas fa-check-circle"></i> 156 класифіковано сьогодні</span>
-                    <span><i class="fas fa-percentage"></i> 98.7% точність</span>
+                    <span data-i18n="screen.dispatcher.stat1"><i class="fas fa-check-circle"></i> 156 класифіковано сьогодні</span>
+                    <span data-i18n="screen.dispatcher.stat2"><i class="fas fa-percentage"></i> 98.7% точність</span>
                 </div>
             </div>
 
@@ -652,22 +669,22 @@
             <div class="screen-header">
                 <button class="back-btn" id="dataSourcesBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-database"></i> Джерела даних</h2>
-                <button class="btn-primary" id="addSourceBtn"><i class="fas fa-plus"></i> Додати джерело</button>
+                <h2 data-i18n="screen.dataSources.title"><i class="fas fa-database"></i> Джерела даних</h2>
+                <button class="btn-primary" id="addSourceBtn" data-i18n="btn.addSource"><i class="fas fa-plus"></i> Додати джерело</button>
             </div>
 
             <div class="data-sources-container">
                 <div class="sources-section">
-                    <h3><i class="fas fa-building"></i> Внутрішні джерела</h3>
+                    <h3 data-i18n="screen.dataSources.internal"><i class="fas fa-building"></i> Внутрішні джерела</h3>
                     <div class="sources-list" id="internalSourcesList">
                         <!-- Internal sources will be rendered here -->
                     </div>
                 </div>
 
                 <div class="sources-section">
-                    <h3><i class="fas fa-globe"></i> Зовнішні джерела</h3>
+                    <h3 data-i18n="screen.dataSources.external"><i class="fas fa-globe"></i> Зовнішні джерела</h3>
                     <div class="sources-list" id="externalSourcesList">
                         <!-- External sources will be rendered here -->
                     </div>
@@ -680,9 +697,9 @@
             <div class="screen-header">
                 <button class="back-btn" id="hrDashboardBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-users"></i> HR та рекрутинг</h2>
+                <h2 data-i18n="screen.hr.title"><i class="fas fa-users"></i> HR та рекрутинг</h2>
             </div>
 
             <div class="dashboard-container">
@@ -693,7 +710,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">1,247</span>
-                            <span class="dashboard-stat-label">Загальна кількість працівників</span>
+                            <span class="dashboard-stat-label" data-i18n="hr.stat.total">Загальна кількість працівників</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -702,7 +719,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">23</span>
-                            <span class="dashboard-stat-label">Нових цього місяця</span>
+                            <span class="dashboard-stat-label" data-i18n="hr.stat.newThisMonth">Нових цього місяця</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -711,7 +728,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">15</span>
-                            <span class="dashboard-stat-label">Відкритих вакансій</span>
+                            <span class="dashboard-stat-label" data-i18n="hr.stat.openVacancies">Відкритих вакансій</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -720,7 +737,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">5</span>
-                            <span class="dashboard-stat-label">Звільнень цього місяця</span>
+                            <span class="dashboard-stat-label" data-i18n="hr.stat.dismissals">Звільнень цього місяця</span>
                         </div>
                     </div>
                 </div>
@@ -728,36 +745,36 @@
                 <div class="dashboard-widgets">
                     <div class="widget">
                         <div class="widget-header">
-                            <h4><i class="fas fa-chart-pie"></i> Розподіл за підрозділами</h4>
+                            <h4 data-i18n="hr.deptChartTitle"><i class="fas fa-chart-pie"></i> Розподіл за підрозділами</h4>
                         </div>
                         <div class="widget-content" id="hrDepartmentChart">
                             <div class="department-item">
-                                <span class="dept-name">Юридичний відділ</span>
+                                <span class="dept-name" data-i18n="dept.legal">Юридичний відділ</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 15%;"></div></div>
                                 <span class="dept-count">187</span>
                             </div>
                             <div class="department-item">
-                                <span class="dept-name">IT департамент</span>
+                                <span class="dept-name" data-i18n="dept.it">IT департамент</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 22%;"></div></div>
                                 <span class="dept-count">274</span>
                             </div>
                             <div class="department-item">
-                                <span class="dept-name">Фінанси</span>
+                                <span class="dept-name" data-i18n="dept.finance">Фінанси</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 12%;"></div></div>
                                 <span class="dept-count">150</span>
                             </div>
                             <div class="department-item">
-                                <span class="dept-name">HR</span>
+                                <span class="dept-name" data-i18n="dept.hr">HR</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 8%;"></div></div>
                                 <span class="dept-count">100</span>
                             </div>
                             <div class="department-item">
-                                <span class="dept-name">Виробництво</span>
+                                <span class="dept-name" data-i18n="dept.production">Виробництво</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 35%;"></div></div>
                                 <span class="dept-count">436</span>
                             </div>
                             <div class="department-item">
-                                <span class="dept-name">Інші</span>
+                                <span class="dept-name" data-i18n="dept.other">Інші</span>
                                 <div class="dept-bar"><div class="dept-fill" style="width: 8%;"></div></div>
                                 <span class="dept-count">100</span>
                             </div>
@@ -766,29 +783,29 @@
 
                     <div class="widget">
                         <div class="widget-header">
-                            <h4><i class="fas fa-clipboard-list"></i> Активні вакансії</h4>
+                            <h4 data-i18n="hr.vacanciesTitle"><i class="fas fa-clipboard-list"></i> Активні вакансії</h4>
                         </div>
                         <div class="widget-content">
                             <div class="vacancy-item">
                                 <div class="vacancy-info">
                                     <span class="vacancy-title">Senior Legal Counsel</span>
-                                    <span class="vacancy-dept">Юридичний відділ</span>
+                                    <span class="vacancy-dept" data-i18n="dept.legal">Юридичний відділ</span>
                                 </div>
-                                <span class="vacancy-applicants">12 кандидатів</span>
+                                <span class="vacancy-applicants" data-i18n="hr.applicants12">12 кандидатів</span>
                             </div>
                             <div class="vacancy-item">
                                 <div class="vacancy-info">
                                     <span class="vacancy-title">Full Stack Developer</span>
-                                    <span class="vacancy-dept">IT департамент</span>
+                                    <span class="vacancy-dept" data-i18n="dept.it">IT департамент</span>
                                 </div>
-                                <span class="vacancy-applicants">28 кандидатів</span>
+                                <span class="vacancy-applicants" data-i18n="hr.applicants28">28 кандидатів</span>
                             </div>
                             <div class="vacancy-item">
                                 <div class="vacancy-info">
                                     <span class="vacancy-title">Financial Analyst</span>
-                                    <span class="vacancy-dept">Фінанси</span>
+                                    <span class="vacancy-dept" data-i18n="dept.finance">Фінанси</span>
                                 </div>
-                                <span class="vacancy-applicants">8 кандидатів</span>
+                                <span class="vacancy-applicants" data-i18n="hr.applicants8">8 кандидатів</span>
                             </div>
                         </div>
                     </div>
@@ -801,9 +818,9 @@
             <div class="screen-header">
                 <button class="back-btn" id="financeBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-chart-line"></i> Фінанси</h2>
+                <h2 data-i18n="screen.finance.title"><i class="fas fa-chart-line"></i> Фінанси</h2>
             </div>
 
             <div class="dashboard-container">
@@ -814,7 +831,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">₴ 45.2M</span>
-                            <span class="dashboard-stat-label">Дохід за місяць</span>
+                            <span class="dashboard-stat-label" data-i18n="finance.stat.income">Дохід за місяць</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -823,7 +840,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">₴ 32.8M</span>
-                            <span class="dashboard-stat-label">Витрати за місяць</span>
+                            <span class="dashboard-stat-label" data-i18n="finance.stat.expenses">Витрати за місяць</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -832,7 +849,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">₴ 12.4M</span>
-                            <span class="dashboard-stat-label">Чистий прибуток</span>
+                            <span class="dashboard-stat-label" data-i18n="finance.stat.profit">Чистий прибуток</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -841,7 +858,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">156</span>
-                            <span class="dashboard-stat-label">Рахунків до оплати</span>
+                            <span class="dashboard-stat-label" data-i18n="finance.stat.invoices">Рахунків до оплати</span>
                         </div>
                     </div>
                 </div>
@@ -849,47 +866,47 @@
                 <div class="dashboard-widgets">
                     <div class="widget wide">
                         <div class="widget-header">
-                            <h4><i class="fas fa-file-invoice"></i> Останні транзакції</h4>
+                            <h4 data-i18n="finance.transactionsTitle"><i class="fas fa-file-invoice"></i> Останні транзакції</h4>
                         </div>
                         <div class="widget-content">
                             <table class="finance-table">
                                 <thead>
                                     <tr>
-                                        <th>Дата</th>
-                                        <th>Опис</th>
-                                        <th>Контрагент</th>
-                                        <th>Сума</th>
-                                        <th>Статус</th>
+                                        <th data-i18n="finance.col.date">Дата</th>
+                                        <th data-i18n="finance.col.description">Опис</th>
+                                        <th data-i18n="finance.col.counterparty">Контрагент</th>
+                                        <th data-i18n="finance.col.amount">Сума</th>
+                                        <th data-i18n="finance.col.status">Статус</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>03.02.2026</td>
-                                        <td>Оплата за послуги</td>
-                                        <td>ТОВ "Консалт Груп"</td>
+                                        <td data-i18n="finance.tx1.desc">Оплата за послуги</td>
+                                        <td data-i18n="finance.tx1.party">ТОВ "Консалт Груп"</td>
                                         <td class="amount negative">-₴ 125,000</td>
-                                        <td><span class="status-badge success">Сплачено</span></td>
+                                        <td><span class="status-badge success" data-i18n="finance.status.paid">Сплачено</span></td>
                                     </tr>
                                     <tr>
                                         <td>02.02.2026</td>
-                                        <td>Надходження за договором</td>
-                                        <td>АТ "Укрбуд"</td>
+                                        <td data-i18n="finance.tx2.desc">Надходження за договором</td>
+                                        <td data-i18n="finance.tx2.party">АТ "Укрбуд"</td>
                                         <td class="amount positive">+₴ 450,000</td>
-                                        <td><span class="status-badge success">Отримано</span></td>
+                                        <td><span class="status-badge success" data-i18n="finance.status.received">Отримано</span></td>
                                     </tr>
                                     <tr>
                                         <td>01.02.2026</td>
-                                        <td>Орендна плата</td>
-                                        <td>ТОВ "Бізнес Центр"</td>
+                                        <td data-i18n="finance.tx3.desc">Орендна плата</td>
+                                        <td data-i18n="finance.tx3.party">ТОВ "Бізнес Центр"</td>
                                         <td class="amount negative">-₴ 85,000</td>
-                                        <td><span class="status-badge warning">Очікує</span></td>
+                                        <td><span class="status-badge warning" data-i18n="finance.status.pending">Очікує</span></td>
                                     </tr>
                                     <tr>
                                         <td>31.01.2026</td>
-                                        <td>Заробітна плата</td>
-                                        <td>Працівники</td>
+                                        <td data-i18n="finance.tx4.desc">Заробітна плата</td>
+                                        <td data-i18n="finance.tx4.party">Працівники</td>
                                         <td class="amount negative">-₴ 2,450,000</td>
-                                        <td><span class="status-badge success">Сплачено</span></td>
+                                        <td><span class="status-badge success" data-i18n="finance.status.paid">Сплачено</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -904,9 +921,9 @@
             <div class="screen-header">
                 <button class="back-btn" id="procurementBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Назад</span>
+                    <span data-i18n="btn.back">Назад</span>
                 </button>
-                <h2><i class="fas fa-shopping-cart"></i> Закупівлі</h2>
+                <h2 data-i18n="screen.procurement.title"><i class="fas fa-shopping-cart"></i> Закупівлі</h2>
             </div>
 
             <div class="dashboard-container">
@@ -917,7 +934,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">34</span>
-                            <span class="dashboard-stat-label">Активних тендерів</span>
+                            <span class="dashboard-stat-label" data-i18n="procurement.stat.activeTenders">Активних тендерів</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -926,7 +943,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">156</span>
-                            <span class="dashboard-stat-label">Постачальників</span>
+                            <span class="dashboard-stat-label" data-i18n="procurement.stat.suppliers">Постачальників</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -935,7 +952,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">12</span>
-                            <span class="dashboard-stat-label">Очікують погодження</span>
+                            <span class="dashboard-stat-label" data-i18n="procurement.stat.awaitingApproval">Очікують погодження</span>
                         </div>
                     </div>
                     <div class="dashboard-stat-card">
@@ -944,7 +961,7 @@
                         </div>
                         <div class="dashboard-stat-info">
                             <span class="dashboard-stat-value">8</span>
-                            <span class="dashboard-stat-label">Очікують поставки</span>
+                            <span class="dashboard-stat-label" data-i18n="procurement.stat.awaitingDelivery">Очікують поставки</span>
                         </div>
                     </div>
                 </div>
@@ -952,27 +969,27 @@
                 <div class="dashboard-widgets">
                     <div class="widget">
                         <div class="widget-header">
-                            <h4><i class="fas fa-gavel"></i> Активні тендери</h4>
+                            <h4 data-i18n="procurement.tendersTitle"><i class="fas fa-gavel"></i> Активні тендери</h4>
                         </div>
                         <div class="widget-content">
                             <div class="tender-item">
                                 <div class="tender-info">
-                                    <span class="tender-title">Закупівля IT обладнання</span>
-                                    <span class="tender-deadline">До 15.02.2026</span>
+                                    <span class="tender-title" data-i18n="procurement.tender1.title">Закупівля IT обладнання</span>
+                                    <span class="tender-deadline" data-i18n="procurement.tender1.deadline">До 15.02.2026</span>
                                 </div>
                                 <span class="tender-budget">₴ 2.5M</span>
                             </div>
                             <div class="tender-item">
                                 <div class="tender-info">
-                                    <span class="tender-title">Канцелярські товари на 2026</span>
-                                    <span class="tender-deadline">До 20.02.2026</span>
+                                    <span class="tender-title" data-i18n="procurement.tender2.title">Канцелярські товари на 2026</span>
+                                    <span class="tender-deadline" data-i18n="procurement.tender2.deadline">До 20.02.2026</span>
                                 </div>
                                 <span class="tender-budget">₴ 350K</span>
                             </div>
                             <div class="tender-item">
                                 <div class="tender-info">
-                                    <span class="tender-title">Послуги з охорони</span>
-                                    <span class="tender-deadline">До 28.02.2026</span>
+                                    <span class="tender-title" data-i18n="procurement.tender3.title">Послуги з охорони</span>
+                                    <span class="tender-deadline" data-i18n="procurement.tender3.deadline">До 28.02.2026</span>
                                 </div>
                                 <span class="tender-budget">₴ 1.2M</span>
                             </div>
@@ -981,13 +998,13 @@
 
                     <div class="widget">
                         <div class="widget-header">
-                            <h4><i class="fas fa-users"></i> Топ постачальники</h4>
+                            <h4 data-i18n="procurement.suppliersTitle"><i class="fas fa-users"></i> Топ постачальники</h4>
                         </div>
                         <div class="widget-content">
                             <div class="supplier-item">
                                 <div class="supplier-info">
-                                    <span class="supplier-name">ТОВ "СФЕРА-М"</span>
-                                    <span class="supplier-category">Засоби захисту</span>
+                                    <span class="supplier-name" data-i18n="procurement.supplier1.name">ТОВ "СФЕРА-М"</span>
+                                    <span class="supplier-category" data-i18n="procurement.supplier1.category">Засоби захисту</span>
                                 </div>
                                 <div class="supplier-rating">
                                     <i class="fas fa-star"></i>
@@ -996,8 +1013,8 @@
                             </div>
                             <div class="supplier-item">
                                 <div class="supplier-info">
-                                    <span class="supplier-name">АТ "ТехноПостач"</span>
-                                    <span class="supplier-category">IT обладнання</span>
+                                    <span class="supplier-name" data-i18n="procurement.supplier2.name">АТ "ТехноПостач"</span>
+                                    <span class="supplier-category" data-i18n="procurement.supplier2.category">IT обладнання</span>
                                 </div>
                                 <div class="supplier-rating">
                                     <i class="fas fa-star"></i>
@@ -1006,8 +1023,8 @@
                             </div>
                             <div class="supplier-item">
                                 <div class="supplier-info">
-                                    <span class="supplier-name">ТОВ "Офіс-Сервіс"</span>
-                                    <span class="supplier-category">Канцелярія</span>
+                                    <span class="supplier-name" data-i18n="procurement.supplier3.name">ТОВ "Офіс-Сервіс"</span>
+                                    <span class="supplier-category" data-i18n="procurement.supplier3.category">Канцелярія</span>
                                 </div>
                                 <div class="supplier-rating">
                                     <i class="fas fa-star"></i>
@@ -1025,7 +1042,7 @@
             <div class="screen-header">
                 <button class="back-btn" id="docBackBtn">
                     <i class="fas fa-arrow-left"></i>
-                    <span>До результатів</span>
+                    <span data-i18n="doc.backToResults">До результатів</span>
                 </button>
                 <div class="doc-actions">
                     <button class="action-btn"><i class="fas fa-bookmark"></i></button>
@@ -1044,7 +1061,7 @@
                 <div class="doc-footer">
                     <a href="#" class="source-link" id="sourceLink">
                         <i class="fas fa-external-link-alt"></i>
-                        <span>Перейти до джерела</span>
+                        <span data-i18n="doc.goToSource">Перейти до джерела</span>
                     </a>
                 </div>
             </div>
@@ -1053,7 +1070,7 @@
         <!-- Favorites Screen -->
         <section id="favoritesScreen" class="screen">
             <div class="screen-header">
-                <h2><i class="fas fa-star"></i> Обране</h2>
+                <h2 data-i18n="screen.favorites.title"><i class="fas fa-star"></i> Обране</h2>
             </div>
             <div class="favorites-content">
                 <div id="favoritesGrid" class="tiles-grid favorites-grid"></div>
@@ -1061,9 +1078,9 @@
                     <div class="empty-icon">
                         <i class="far fa-star"></i>
                     </div>
-                    <h3>Немає обраних розділів</h3>
-                    <p>Додайте розділи в обране, натиснувши на зірочку на головній сторінці</p>
-                    <button class="btn-primary" id="goToHomeBtn">
+                    <h3 data-i18n="favorites.emptyTitle">Немає обраних розділів</h3>
+                    <p data-i18n="favorites.emptyDesc">Додайте розділи в обране, натиснувши на зірочку на головній сторінці</p>
+                    <button class="btn-primary" id="goToHomeBtn" data-i18n="btn.goToHome">
                         <i class="fas fa-home"></i>
                         <span>Перейти на головну</span>
                     </button>
@@ -1074,19 +1091,19 @@
         <!-- History Screen -->
         <section id="historyScreen" class="screen">
             <div class="screen-header">
-                <h2><i class="fas fa-history"></i> Історія активності</h2>
+                <h2 data-i18n="screen.history.title"><i class="fas fa-history"></i> Історія активності</h2>
             </div>
             <div class="history-timeline">
                 <div class="timeline-section">
-                    <div class="timeline-date">Сьогодні, 3 лютого 2026</div>
+                    <div class="timeline-date" data-i18n="history.date1">Сьогодні, 3 лютого 2026</div>
                     <div class="timeline-items">
                         <div class="timeline-item">
                             <div class="timeline-icon search">
                                 <i class="fas fa-robot"></i>
                             </div>
                             <div class="timeline-content">
-                                <h4>Запит до ШІ: "Чи може працівник обирати банк для зарплати"</h4>
-                                <p>Поставити питання ШІ агенту • Отримано відповідь</p>
+                                <h4 data-i18n="history.item1.title">Запит до ШІ: "Чи може працівник обирати банк для зарплати"</h4>
+                                <p data-i18n="history.item1.meta">Поставити питання ШІ агенту • Отримано відповідь</p>
                                 <span class="timeline-time">10:34</span>
                             </div>
                         </div>
@@ -1095,8 +1112,8 @@
                                 <i class="fas fa-ticket-alt"></i>
                             </div>
                             <div class="timeline-content">
-                                <h4>Відповідь на тікет #TK-2026-0087</h4>
-                                <p>Мої тікети • Трудові відносини</p>
+                                <h4 data-i18n="history.item2.title">Відповідь на тікет #TK-2026-0087</h4>
+                                <p data-i18n="history.item2.meta">Мої тікети • Трудові відносини</p>
                                 <span class="timeline-time">09:48</span>
                             </div>
                         </div>
@@ -1111,20 +1128,20 @@
                 <div class="profile-sidebar">
                     <div class="profile-card">
                         <div class="profile-card-avatar">
-                            <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=120" alt="User">
+                            <img src="https://ui-avatars.com/api/?name=Олена+Петренко&background=e31e24&color=fff&size=120" data-i18n-src="profile.avatarCard" alt="User">
                         </div>
-                        <h3>Олена Петренко</h3>
-                        <p class="profile-card-role">Старший юрисконсульт</p>
-                        <p class="profile-card-dept"><i class="fas fa-building"></i> Юридичний відділ</p>
+                        <h3 data-i18n="profile.name">Олена Петренко</h3>
+                        <p class="profile-card-role" data-i18n="profile.role">Старший юрисконсульт</p>
+                        <p class="profile-card-dept" data-i18n="profile.deptCard"><i class="fas fa-building"></i> Юридичний відділ</p>
                     </div>
                     <div class="profile-nav">
-                        <a href="#" class="profile-nav-item active" data-section="personal">
+                        <a href="#" class="profile-nav-item active" data-section="personal" data-i18n="profile.nav.personal">
                             <i class="fas fa-user"></i> Особисті дані
                         </a>
-                        <a href="#" class="profile-nav-item" data-section="security">
+                        <a href="#" class="profile-nav-item" data-section="security" data-i18n="profile.nav.security">
                             <i class="fas fa-lock"></i> Безпека
                         </a>
-                        <a href="#" class="profile-nav-item" data-section="preferences">
+                        <a href="#" class="profile-nav-item" data-section="preferences" data-i18n="profile.nav.preferences">
                             <i class="fas fa-sliders-h"></i> Налаштування
                         </a>
                     </div>
@@ -1132,17 +1149,17 @@
                 <div class="profile-main">
                     <div class="profile-section" id="personalSection">
                         <div class="section-header">
-                            <h2>Особисті дані</h2>
+                            <h2 data-i18n="profile.personalTitle">Особисті дані</h2>
                         </div>
                         <div class="profile-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Прізвище</label>
-                                    <input type="text" value="Петренко" readonly>
+                                    <label data-i18n="profile.field.lastName">Прізвище</label>
+                                    <input type="text" value="Петренко" data-i18n-value="profile.value.lastName" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label>Ім'я</label>
-                                    <input type="text" value="Олена" readonly>
+                                    <label data-i18n="profile.field.firstName">Ім'я</label>
+                                    <input type="text" value="Олена" data-i18n-value="profile.value.firstName" readonly>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -1151,7 +1168,7 @@
                                     <input type="email" value="olena.petrenko@company.ua" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label>Телефон</label>
+                                    <label data-i18n="profile.field.phone">Телефон</label>
                                     <input type="tel" value="+380 67 123 45 67" readonly>
                                 </div>
                             </div>
@@ -1159,35 +1176,35 @@
                     </div>
                     <div class="profile-section" id="securitySection" style="display: none;">
                         <div class="section-header">
-                            <h2>Безпека</h2>
+                            <h2 data-i18n="profile.securityTitle">Безпека</h2>
                         </div>
                         <div class="security-options">
                             <div class="security-item">
                                 <div class="security-info">
-                                    <h4><i class="fas fa-key"></i> Пароль</h4>
-                                    <p>Останнє оновлення: 15 грудня 2025</p>
+                                    <h4 data-i18n="profile.passwordTitle"><i class="fas fa-key"></i> Пароль</h4>
+                                    <p data-i18n="profile.passwordUpdated">Останнє оновлення: 15 грудня 2025</p>
                                 </div>
-                                <button class="btn-secondary">Змінити пароль</button>
+                                <button class="btn-secondary" data-i18n="btn.changePassword">Змінити пароль</button>
                             </div>
                         </div>
                     </div>
                     <div class="profile-section" id="preferencesSection" style="display: none;">
                         <div class="section-header">
-                            <h2>Налаштування</h2>
+                            <h2 data-i18n="profile.preferencesTitle">Налаштування</h2>
                         </div>
                         <div class="preferences-options">
                             <div class="preference-group">
-                                <h4>Тема оформлення</h4>
+                                <h4 data-i18n="profile.themeTitle">Тема оформлення</h4>
                                 <div class="theme-options">
                                     <label class="theme-option active">
                                         <input type="radio" name="theme" value="light" checked>
                                         <span class="theme-preview light"></span>
-                                        <span>Світла</span>
+                                        <span data-i18n="profile.themeLight">Світла</span>
                                     </label>
                                     <label class="theme-option">
                                         <input type="radio" name="theme" value="dark">
                                         <span class="theme-preview dark"></span>
-                                        <span>Темна</span>
+                                        <span data-i18n="profile.themeDark">Темна</span>
                                     </label>
                                 </div>
                             </div>
@@ -1207,7 +1224,7 @@
             <div class="chat-header">
                 <div class="chat-title">
                     <i class="fas fa-robot"></i>
-                    <span>AI Асистент</span>
+                    <span data-i18n="chat.title">AI Асистент</span>
                 </div>
                 <button class="chat-close" id="chatClose">
                     <i class="fas fa-times"></i>
@@ -1216,13 +1233,13 @@
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot">
                     <div class="message-avatar"><i class="fas fa-robot"></i></div>
-                    <div class="message-content">
+                    <div class="message-content" data-i18n="chat.greeting">
                         Вітаю! Я ваш AI асистент. Чим можу допомогти?
                     </div>
                 </div>
             </div>
             <div class="chat-input">
-                <input type="text" placeholder="Введіть повідомлення..." id="chatInput">
+                <input type="text" placeholder="Введіть повідомлення..." id="chatInput" data-i18n-placeholder="chat.placeholder">
                 <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
@@ -1232,29 +1249,29 @@
     <div class="modal" id="addSourceModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Додати джерело даних</h3>
+                <h3 data-i18n="modal.addSource.title">Додати джерело даних</h3>
                 <button class="modal-close" id="closeAddSourceModal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Назва джерела</label>
-                    <input type="text" id="sourceNameInput" placeholder="Введіть назву...">
+                    <label data-i18n="modal.addSource.nameLabel">Назва джерела</label>
+                    <input type="text" id="sourceNameInput" placeholder="Введіть назву..." data-i18n-placeholder="modal.addSource.namePlaceholder">
                 </div>
                 <div class="form-group">
-                    <label>Тип джерела</label>
+                    <label data-i18n="modal.addSource.typeLabel">Тип джерела</label>
                     <select id="sourceTypeSelect">
-                        <option value="internal">Внутрішнє</option>
-                        <option value="external">Зовнішнє</option>
+                        <option value="internal" data-i18n="modal.addSource.typeInternal">Внутрішнє</option>
+                        <option value="external" data-i18n="modal.addSource.typeExternal">Зовнішнє</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>URL або шлях</label>
-                    <input type="text" id="sourceUrlInput" placeholder="https:// або //sharepoint/...">
+                    <label data-i18n="modal.addSource.urlLabel">URL або шлях</label>
+                    <input type="text" id="sourceUrlInput" placeholder="https:// або //sharepoint/..." data-i18n-placeholder="modal.addSource.urlPlaceholder">
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn-secondary" id="cancelAddSource">Скасувати</button>
-                <button class="btn-primary" id="confirmAddSource">Додати</button>
+                <button class="btn-secondary" id="cancelAddSource" data-i18n="btn.cancel">Скасувати</button>
+                <button class="btn-primary" id="confirmAddSource" data-i18n="btn.add">Додати</button>
             </div>
         </div>
     </div>
@@ -1263,23 +1280,13 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner">
             <div class="spinner"></div>
-            <p>Аналізуємо запит...</p>
+            <p data-i18n="loading.analyzing">Аналізуємо запит...</p>
         </div>
     </div>
 
+    <script src="ui-i18n.js"></script>
+    <script src="content.en.js"></script>
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
-    <script>
-        // Demo top-bar language switch — visual only for now; this app does not
-        // translate yet, but the selector stays in sync with the suite.
-        document.querySelectorAll('.md-lang-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.md-lang-btn').forEach(function (b) {
-                    var active = b === btn;
-                    b.classList.toggle('active', active);
-                    b.setAttribute('aria-selected', active ? 'true' : 'false');
-                });
-            });
-        });
-    </script>
 </body>
 </html>

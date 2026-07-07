@@ -1,7 +1,14 @@
 // ==================== CONFIGURATION ====================
 
+// Active locale. The data below is authored in Ukrainian; when the language
+// is English we swap in the mirrored content from content.en.js. Language is
+// resolved by i18n.js (loaded before this file) and persisted across reloads.
+const LEGAL_LANG = window.LEGAL_LANG || 'uk';
+const EN = window.LEGAL_CONTENT_EN || null;
+const useEn = LEGAL_LANG === 'en' && !!EN;
+
 // Main tiles configuration
-const mainTilesConfig = {
+const mainTilesConfig = useEn ? EN.mainTilesConfig : {
     'legal-clients': {
         title: 'Клієнтам юридичної служби',
         icon: 'fas fa-users',
@@ -32,7 +39,7 @@ const mainTilesConfig = {
 };
 
 // AI Answers for suggestions
-const aiAnswers = {
+const aiAnswers = useEn ? EN.aiAnswers : {
     'salary-bank': {
         question: 'Чи може працівник вільно обирати банк для отримання заробітної плати?',
         answer: `
@@ -197,7 +204,7 @@ const aiAnswers = {
 };
 
 // Internal documents results
-const internalDocsResults = [
+const internalDocsResults = useEn ? EN.internalDocsResults : [
     {
         source: 'Документ PDF "Шаблон Бізнес-вимог"',
         sourceIcon: 'fas fa-file-pdf',
@@ -225,7 +232,7 @@ const internalDocsResults = [
 ];
 
 // FAQ Knowledge Base
-const faqData = [
+const faqData = useEn ? EN.faqData : [
     {
         id: 1,
         category: 'labor',
@@ -557,7 +564,7 @@ const faqData = [
 ];
 
 // Tickets data
-const ticketsData = [
+const ticketsData = useEn ? EN.ticketsData : [
     { id: 'TK-2026-0092', title: 'Питання щодо індексації заробітної плати', from: 'Марія Сидоренко', department: 'Бухгалтерія', status: 'new', priority: 'high', date: '03.02.2026 10:15', category: 'labor' },
     { id: 'TK-2026-0091', title: 'Перевірка контрагента ТОВ "Будсервіс"', from: 'Петро Іваненко', department: 'Закупівлі', status: 'new', priority: 'medium', date: '03.02.2026 09:30', category: 'compliance' },
     { id: 'TK-2026-0090', title: 'Погодження договору оренди приміщення', from: 'Олена Ковальчук', department: 'Адміністрація', status: 'in-progress', priority: 'high', date: '02.02.2026 16:45', category: 'contracts' },
@@ -569,7 +576,7 @@ const ticketsData = [
 ];
 
 // Dispatcher categories
-const dispatcherCategories = [
+const dispatcherCategories = useEn ? EN.dispatcherCategories : [
     { id: 'compliance', name: 'Комплаєнс-перевірки', icon: 'fas fa-shield-alt', color: '#e31e24', count: 3 },
     { id: 'court', name: 'Судові справи', icon: 'fas fa-gavel', color: '#4b5563', count: 2 },
     { id: 'labor', name: 'Трудові відносини', icon: 'fas fa-users', color: '#b3121d', count: 5 },
@@ -577,7 +584,7 @@ const dispatcherCategories = [
 ];
 
 // Data sources
-const dataSources = {
+const dataSources = useEn ? EN.dataSources : {
     internal: [
         { id: 1, name: 'SharePoint "Правові документи"', url: '//sharepoint/legal', status: 'active', lastSync: '03.02.2026 08:00' },
         { id: 2, name: 'База ITSM', url: '//itsm.company.ua', status: 'active', lastSync: '03.02.2026 07:45' },
@@ -750,8 +757,8 @@ function showEscalateSuccessMessage() {
     message.innerHTML = `
         <div class="success-icon"><i class="fas fa-check-circle"></i></div>
         <div class="success-content">
-            <h4>Запит успішно направлено!</h4>
-            <p>Ваш запит успішно направлено фахівцям юридичної служби. Очікуйте відповідь до кінця робочого дня сьогодні.</p>
+            <h4>${t('dyn.escalate.title')}</h4>
+            <p>${t('dyn.escalate.text')}</p>
         </div>
     `;
     container.appendChild(message);
@@ -768,7 +775,7 @@ function showAIAnswer(suggestionId) {
         hideLoading();
 
         document.getElementById('aiSearchInput').value = answer.question;
-        document.getElementById('aiTimestamp').textContent = new Date().toLocaleString('uk-UA');
+        document.getElementById('aiTimestamp').textContent = new Date().toLocaleString(LEGAL_LANG === 'en' ? 'en-GB' : 'uk-UA');
         document.getElementById('aiAnswerContent').innerHTML = answer.answer;
         document.getElementById('aiAnswerContainer').style.display = 'block';
 
@@ -787,7 +794,7 @@ document.getElementById('docsSearchInput')?.addEventListener('keypress', (e) => 
 });
 
 document.getElementById('docsExampleLink')?.addEventListener('click', () => {
-    document.getElementById('docsSearchInput').value = 'Які вимоги до документу з Бізнес-вимогами';
+    document.getElementById('docsSearchInput').value = t('dyn.docs.exampleQuery');
     performDocsSearch();
 });
 
@@ -819,17 +826,17 @@ function renderDocsResults(results) {
             <p class="result-excerpt">${result.excerpt}</p>
             <div class="result-meta">
                 <span><i class="fas fa-calendar"></i> ${result.date}</span>
-                <span><i class="fas fa-percentage"></i> Релевантність: ${result.relevance}</span>
+                <span><i class="fas fa-percentage"></i> ${t('dyn.docs.relevance')} ${result.relevance}</span>
             </div>
             <div class="feedback-buttons">
-                <button class="feedback-btn like" title="Корисно"><i class="fas fa-thumbs-up"></i></button>
-                <button class="feedback-btn dislike" title="Не корисно"><i class="fas fa-thumbs-down"></i></button>
+                <button class="feedback-btn like" title="${t('dyn.docs.like')}"><i class="fas fa-thumbs-up"></i></button>
+                <button class="feedback-btn dislike" title="${t('dyn.docs.dislike')}"><i class="fas fa-thumbs-down"></i></button>
             </div>
         `;
         container.appendChild(card);
     });
 
-    document.getElementById('docsResultsCount').textContent = `Знайдено: ${results.length}`;
+    document.getElementById('docsResultsCount').textContent = `${t('dyn.docs.found')} ${results.length}`;
     document.getElementById('docsSearchResults').style.display = 'block';
 }
 
@@ -882,7 +889,7 @@ function renderTickets(filter = 'all') {
         const resolutionHtml = ticket.status === 'resolved' && ticket.resolution ? `
             <div class="ticket-resolution">
                 <div class="ticket-resolution-header">
-                    <i class="fas fa-check-circle"></i> <strong>Результат:</strong>
+                    <i class="fas fa-check-circle"></i> <strong>${t('dyn.ticket.result')}</strong>
                 </div>
                 <p class="ticket-resolution-text">${ticket.resolution}</p>
                 <div class="ticket-resolution-meta">
@@ -933,13 +940,7 @@ function updateTicketStats(activeFilter = 'all') {
 }
 
 function getStatusText(status) {
-    const statuses = {
-        'new': 'Новий',
-        'in-progress': 'В роботі',
-        'waiting': 'Очікує',
-        'resolved': 'Вирішено'
-    };
-    return statuses[status] || status;
+    return t('status.' + status) || status;
 }
 
 function openTicketDetail(ticket) {
@@ -969,38 +970,38 @@ function openTicketDetail(ticket) {
                 <span class="message-date">${ticket.date}</span>
             </div>
             <div class="message-content">
-                <p>Доброго дня!</p>
-                <p>Звертаюся з питанням щодо "${ticket.title.toLowerCase()}". Прошу надати консультацію або направити до відповідного спеціаліста.</p>
-                <p>Дякую за допомогу!</p>
+                <p>${t('dyn.ticket.greeting')}</p>
+                <p>${t('dyn.ticket.body').replace('{title}', ticket.title.toLowerCase())}</p>
+                <p>${t('dyn.ticket.thanks')}</p>
             </div>
         </div>
     `;
 
     document.getElementById('ticketDetailSidebar').innerHTML = `
         <div class="sidebar-section">
-            <h4>Інформація</h4>
+            <h4>${t('dyn.ticket.info')}</h4>
             <div class="sidebar-item">
-                <span class="sidebar-label">Категорія</span>
+                <span class="sidebar-label">${t('dyn.ticket.category')}</span>
                 <span class="sidebar-value">${getCategoryName(ticket.category)}</span>
             </div>
             <div class="sidebar-item">
-                <span class="sidebar-label">Пріоритет</span>
+                <span class="sidebar-label">${t('dyn.ticket.priority')}</span>
                 <span class="sidebar-value">${getPriorityText(ticket.priority)}</span>
             </div>
             <div class="sidebar-item">
-                <span class="sidebar-label">Створено</span>
+                <span class="sidebar-label">${t('dyn.ticket.created')}</span>
                 <span class="sidebar-value">${ticket.date}</span>
             </div>
             <div class="sidebar-item">
-                <span class="sidebar-label">Виконавець</span>
-                <span class="sidebar-value">Олена Петренко</span>
+                <span class="sidebar-label">${t('dyn.ticket.assignee')}</span>
+                <span class="sidebar-value">${t('dyn.ticket.assigneeName')}</span>
             </div>
         </div>
         <div class="sidebar-section">
-            <h4>ШІ-аналіз</h4>
+            <h4>${t('dyn.ticket.aiAnalysis')}</h4>
             <div class="ai-analysis">
-                <p><i class="fas fa-robot"></i> Категорію визначено автоматично з точністю <strong>98%</strong></p>
-                <p><i class="fas fa-lightbulb"></i> Рекомендовані джерела: База знань, КЗпП</p>
+                <p><i class="fas fa-robot"></i> ${t('dyn.ticket.aiAccuracy')}</p>
+                <p><i class="fas fa-lightbulb"></i> ${t('dyn.ticket.aiSources')}</p>
             </div>
         </div>
     `;
@@ -1009,13 +1010,11 @@ function openTicketDetail(ticket) {
 }
 
 function getPriorityText(priority) {
-    const priorities = { 'low': 'Низький', 'medium': 'Середній', 'high': 'Високий', 'urgent': 'Терміновий' };
-    return priorities[priority] || priority;
+    return t('priority.' + priority) || priority;
 }
 
 function getCategoryName(category) {
-    const categories = { 'labor': 'Трудові відносини', 'compliance': 'Комплаєнс', 'contracts': 'Договори', 'court': 'Судові справи', 'corporate': 'Корпоративне' };
-    return categories[category] || category;
+    return t('category.' + category) || category;
 }
 
 document.getElementById('ticketStatusFilter')?.addEventListener('change', (e) => {
@@ -1029,7 +1028,7 @@ document.getElementById('sendReplyBtn')?.addEventListener('click', () => {
         setTimeout(() => {
             hideLoading();
             document.getElementById('ticketReplyInput').value = '';
-            alert('Відповідь надіслано!');
+            alert(t('dyn.reply.sent'));
         }, 1000);
     }
 });
@@ -1051,7 +1050,7 @@ function renderDispatcherCategories() {
                 </div>
                 <div class="category-info">
                     <h3>${cat.name}</h3>
-                    <span class="category-count">${tickets.length} тікетів</span>
+                    <span class="category-count">${tickets.length} ${t('dyn.dispatcher.tickets')}</span>
                 </div>
             </div>
             <div class="category-tickets">
@@ -1064,7 +1063,7 @@ function renderDispatcherCategories() {
                 `).join('')}
             </div>
             <div class="category-footer">
-                <span class="ai-badge"><i class="fas fa-robot"></i> Класифіковано ШІ</span>
+                <span class="ai-badge"><i class="fas fa-robot"></i> ${t('dyn.dispatcher.classified')}</span>
             </div>
         `;
 
@@ -1092,14 +1091,14 @@ function renderSourcesList(containerId, sources) {
             <div class="source-info">
                 <h4>${source.name}</h4>
                 <span class="source-url">${source.url}</span>
-                <span class="source-sync"><i class="fas fa-sync"></i> Оновлено: ${source.lastSync}</span>
+                <span class="source-sync"><i class="fas fa-sync"></i> ${t('dyn.source.updated')} ${source.lastSync}</span>
             </div>
             <div class="source-status ${source.status}">
                 <i class="fas fa-check-circle"></i>
             </div>
             <div class="source-actions">
-                <button class="source-action-btn" title="Налаштування"><i class="fas fa-cog"></i></button>
-                <button class="source-action-btn delete" title="Видалити"><i class="fas fa-trash"></i></button>
+                <button class="source-action-btn" title="${t('dyn.source.settings')}"><i class="fas fa-cog"></i></button>
+                <button class="source-action-btn delete" title="${t('dyn.source.delete')}"><i class="fas fa-trash"></i></button>
             </div>
         `;
         container.appendChild(item);
@@ -1125,7 +1124,7 @@ document.getElementById('confirmAddSource')?.addEventListener('click', () => {
     const url = document.getElementById('sourceUrlInput').value;
 
     if (name && url) {
-        const newSource = { id: Date.now(), name, url, status: 'active', lastSync: 'Щойно додано' };
+        const newSource = { id: Date.now(), name, url, status: 'active', lastSync: t('dyn.source.justAdded') };
         dataSources[type === 'internal' ? 'internal' : 'external'].push(newSource);
         renderDataSources();
         document.getElementById('addSourceModal').classList.remove('active');
@@ -1283,7 +1282,7 @@ function routeNotification(item) {
         }
     }
 
-    // these screens live under the "Кабінет юриста" section
+    // these screens live under the "Lawyer Cabinet" section
     currentMainTile = 'lawyer-cabinet';
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
@@ -1336,12 +1335,8 @@ themeSwitch?.addEventListener('change', () => {
     localStorage.setItem('theme', themeSwitch.checked ? 'dark' : 'light');
 });
 
-document.querySelectorAll('.settings-seg .seg').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.settings-seg .seg').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    });
-});
+// The interface-language segment in Settings is wired by i18n.js (it switches
+// the locale and reloads), so no separate handler is needed here.
 
 // Profile menu
 document.querySelectorAll('.profile-menu-item').forEach(item => {
@@ -1357,7 +1352,7 @@ document.querySelectorAll('.profile-menu-item').forEach(item => {
                 activateProfileSection('preferences');
             }
         } else if (action === 'logout') {
-            if (confirm('Ви впевнені, що хочете вийти?')) {
+            if (confirm(t('dyn.logout.confirm'))) {
                 location.reload();
             }
         }
@@ -1429,7 +1424,7 @@ function sendChatMessage() {
     chatInput.value = '';
 
     setTimeout(() => {
-        addChatMessage('Дякую за запитання! Рекомендую скористатися розділом "Поставити питання ШІ агенту" для отримання детальної відповіді.');
+        addChatMessage(t('dyn.chat.reply'));
     }, 1000);
 }
 

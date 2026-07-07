@@ -1,7 +1,9 @@
 // ===== i18n =====
+// Company name comes from the active site theme (see ../theme.js)
+const BRAND = (window.SITE_THEME && window.SITE_THEME.brand) || 'Metinvest Digital';
 const I18N = {
   uk: {
-    title: 'Автоматизація створення технологій — Metinvest Digital',
+    title: 'Автоматизація створення технологій — ' + BRAND,
     "brand.subtitle": 'Демо рішень',
     "nav.live": 'Наживо',
     "nav.slides": 'Слайди',
@@ -34,7 +36,7 @@ const I18N = {
     downloadName: 'tehnologichna-karta_ua.html',
   },
   en: {
-    title: 'Process Engineering Automation — Metinvest Digital',
+    title: 'Process Engineering Automation — ' + BRAND,
     "brand.subtitle": 'Solutions Demo',
     "nav.live": 'Live',
     "nav.slides": 'Slides',
