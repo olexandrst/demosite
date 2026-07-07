@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page_title">ВЖИК. Логістична платформа</title>
+    <title data-i18n="page_title">Vroomic. Логістична платформа</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -260,7 +260,7 @@
     </header>
 
     <div class="main-card">
-        <div class="logo-title">ВЖИК<span>.</span></div>
+        <div class="logo-title">Vroomic<span>.</span></div>
         <div class="logo-subtitle" data-i18n="subtitle">Логістична платформа</div>
 
         <!-- Hidden elements (kept so existing scripts don't break) -->
@@ -358,7 +358,7 @@
     <div id="mapOverlay" class="map-overlay">
         <div class="map-sidebar">
             <div class="map-sidebar-header">
-                <div class="logo-title">ВЖИК<span>.</span></div>
+                <div class="logo-title">Vroomic<span>.</span></div>
                 <button class="btn-close-x" onclick="closeMapView()" data-i18n="close_x">✕ ЗАКРИТИ</button>
                 <div class="map-stats-bar">
                     <div class="map-stat">
@@ -385,7 +385,7 @@
         // --- i18n ---
         const I18N = {
             uk: {
-                page_title: 'ВЖИК. Логістична платформа',
+                page_title: 'Vroomic. Логістична платформа',
                 subtitle: 'Логістична платформа',
                 'topbar.subtitle': 'Демо рішень',
                 'topbar.live': 'Наживо',
@@ -445,7 +445,7 @@
                 route_option: (lbl, n) => `${lbl} (${n} точок)`,
                 points_short: 'точок',
                 km_suffix: ' км',
-                depot_title: 'ДЕПО — Морган Феніче',
+                depot_title: 'ДЕПО — Furniture Factory',
                 depot_popup: 'смт. Квасилів, Рівненська обл.',
                 depot_sub: 'смт. Квасилів, Рівненська обл., Україна',
                 point_label: (lbl, seq) => `${lbl} / Точка ${seq}`,
@@ -475,7 +475,7 @@
                 file_routes: 'Маршрути',
             },
             en: {
-                page_title: 'VZHYK. Logistics Platform',
+                page_title: 'Vroomic. Logistics Platform',
                 subtitle: 'Logistics platform',
                 'topbar.subtitle': 'Solutions Demo',
                 'topbar.live': 'Live',
@@ -535,7 +535,7 @@
                 route_option: (lbl, n) => `${lbl} (${n} stops)`,
                 points_short: 'stops',
                 km_suffix: ' km',
-                depot_title: 'DEPOT — Morgan Furniture',
+                depot_title: 'DEPOT — Furniture Factory',
                 depot_popup: 'Kvasyliv, Rivne region',
                 depot_sub: 'Kvasyliv, Rivne region, Ukraine',
                 point_label: (lbl, seq) => `${lbl} / Stop ${seq}`,
@@ -570,6 +570,16 @@
 
         function t(key, ...args) {
             const dict = I18N[currentLang] || I18N.uk;
+            const v = dict[key];
+            if (typeof v === 'function') return v(...args);
+            if (v === undefined) return key;
+            return v;
+        }
+
+        // Always resolve to English — used for generated Excel files so that
+        // column names, sheet names and labels stay English regardless of UI language.
+        function te(key, ...args) {
+            const dict = I18N.en;
             const v = dict[key];
             if (typeof v === 'function') return v(...args);
             if (v === undefined) return key;
@@ -659,14 +669,14 @@
         const PLANNER_API_URL = 'http://192.168.50.144:3000/';
         const DEPOT_LON = 26.161412;
         const DEPOT_LAT = 50.595601;
-        const COL_ORDER_NUM = 'Номер заказа';
-        const COL_PRODUCT = 'Продукция';
-        const COL_VOLUME = 'Объем заказано';
-        const COL_COUNTRY = 'Заказчик страна';
-        const COL_POSTAL_1 = 'Заказчик.Индекс';
-        const COL_POSTAL_2 = 'Индекс';
-        const COL_CITY = 'Заказчик город';
-        const COL_STREET = 'Заказчик улица';
+        const COL_ORDER_NUM = 'Order number';
+        const COL_PRODUCT = 'Product';
+        const COL_VOLUME = 'Volume ordered';
+        const COL_COUNTRY = 'Customer country';
+        const COL_POSTAL_1 = 'Customer postal code';
+        const COL_POSTAL_2 = 'Postal code';
+        const COL_CITY = 'Customer city';
+        const COL_STREET = 'Customer street';
 
         // --- State ---
         let ordersData = null;
@@ -853,7 +863,7 @@
             });
             try {
                 const r = await fetch('https://nominatim.openstreetmap.org/search?' + params.toString(), {
-                    headers: { 'User-Agent': 'VZHYK-Geocoder/1.0' }
+                    headers: { 'User-Agent': 'Vroomic-Geocoder/1.0' }
                 });
                 if (!r.ok) return { lon: null, lat: null, status: 'HTTP_' + r.status };
                 const data = await r.json();
@@ -871,7 +881,7 @@
             const params = new URLSearchParams({ format: 'jsonv2', limit: '1', q: q });
             try {
                 const r = await fetch('https://nominatim.openstreetmap.org/search?' + params.toString(), {
-                    headers: { 'User-Agent': 'VZHYK-Geocoder/1.0' }
+                    headers: { 'User-Agent': 'Vroomic-Geocoder/1.0' }
                 });
                 if (!r.ok) return { lon: null, lat: null, status: 'HTTP_' + r.status };
                 const data = await r.json();
@@ -1034,7 +1044,7 @@
             }
             const ws = XLSX.utils.aoa_to_sheet(wsData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, t('sheet_orders'));
+            XLSX.utils.book_append_sheet(wb, ws, te('sheet_orders'));
             resultWorkbook = wb;
 
             const now = new Date();
@@ -1043,7 +1053,7 @@
             const yyyy = now.getFullYear();
             const hh = String(now.getHours()).padStart(2, '0');
             const min = String(now.getMinutes()).padStart(2, '0');
-            resultFileName = `${t('file_orders')}_${dd}-${mm}-${yyyy}_${hh}-${min}.xlsx`;
+            resultFileName = `${te('file_orders')}_${dd}-${mm}-${yyyy}_${hh}-${min}.xlsx`;
 
             document.getElementById('statSuccess').textContent = successCount;
             document.getElementById('statTotal').textContent = total;
@@ -1202,7 +1212,7 @@
             for (const route of routes) {
                 const jobSteps = route.steps.filter(s => s.type === 'job');
                 if (jobSteps.length === 0) continue;
-                const routeLabel = 'MF-' + String(mapRouteNum).padStart(3, '0');
+                const routeLabel = 'FF-' + String(mapRouteNum).padStart(3, '0');
                 // Get vehicle capacity from description
                 const capMatch = (route.description || '').match(/(\d+)(?:м³|m³)/);
                 const truckCapacity = capMatch ? parseFloat(capMatch[1]) : 0;
@@ -1228,11 +1238,11 @@
             }
 
             // Sheet 1: Detailed routes (with address columns)
-            const sheet1Headers = [t('hdr_route_num'), t('hdr_seq'), t('hdr_order'), t('hdr_product'), t('hdr_volume'), t('hdr_country'), t('hdr_postal'), t('hdr_city'), t('hdr_street'), t('hdr_mileage')];
+            const sheet1Headers = [te('hdr_route_num'), te('hdr_seq'), te('hdr_order'), te('hdr_product'), te('hdr_volume'), te('hdr_country'), te('hdr_postal'), te('hdr_city'), te('hdr_street'), te('hdr_mileage')];
             const sheet1Data = [sheet1Headers];
 
             // Sheet 2: Route summary (without truck column, with country)
-            const sheet2Headers = [t('hdr_route_num'), t('hdr_actual_vol'), t('hdr_country'), t('hdr_points_count'), t('hdr_mileage_short')];
+            const sheet2Headers = [te('hdr_route_num'), te('hdr_actual_vol'), te('hdr_country'), te('hdr_points_count'), te('hdr_mileage_short')];
             const sheet2Data = [sheet2Headers];
 
             let routeNumber = 1;
@@ -1251,7 +1261,7 @@
                 }
                 isFirstRoute = false;
 
-                const routeLabel = 'MF-' + String(routeNumber).padStart(3, '0');
+                const routeLabel = 'FF-' + String(routeNumber).padStart(3, '0');
 
                 // Collect unique delivery points and route data
                 const uniquePoints = new Set();
@@ -1309,14 +1319,14 @@
 
             // Add ЗАГАЛЬНИЙ КІЛОМЕТРАЖ row at the end of sheet 2
             sheet2Data.push(['', '', '', '', '']);
-            sheet2Data.push([t('grand_total_km'), '', '', '', Math.round(grandTotalKm * 10) / 10]);
+            sheet2Data.push([te('grand_total_km'), '', '', '', Math.round(grandTotalKm * 10) / 10]);
 
             // Create workbook
             const ws1 = XLSX.utils.aoa_to_sheet(sheet1Data);
             const ws2 = XLSX.utils.aoa_to_sheet(sheet2Data);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws1, t('sheet_routes'));
-            XLSX.utils.book_append_sheet(wb, ws2, t('sheet_summary'));
+            XLSX.utils.book_append_sheet(wb, ws1, te('sheet_routes'));
+            XLSX.utils.book_append_sheet(wb, ws2, te('sheet_summary'));
             routesWorkbook = wb;
 
             // Generate filename
@@ -1326,7 +1336,7 @@
             const yyyy = now.getFullYear();
             const hh = String(now.getHours()).padStart(2, '0');
             const min = String(now.getMinutes()).padStart(2, '0');
-            routesFileName = `${t('file_routes')}_${mm}-${dd}-${yyyy}_${hh}_${min}.xlsx`;
+            routesFileName = `${te('file_routes')}_${mm}-${dd}-${yyyy}_${hh}_${min}.xlsx`;
 
             // Show result
             const activeRouteCount = routeNumber - 1;
@@ -1696,7 +1706,7 @@
                 if (cachedResponse.routesXlsxBase64) {
                     try {
                         routesWorkbook = XLSX.read(base64ToBytes(cachedResponse.routesXlsxBase64), { type: 'array' });
-                        routesFileName = cachedResponse.routesFileName || (t('file_routes') + '.xlsx');
+                        routesFileName = cachedResponse.routesFileName || (te('file_routes') + '.xlsx');
                     } catch (e) { /* ignore */ }
                 }
                 showSection('sectionRouteResult');
