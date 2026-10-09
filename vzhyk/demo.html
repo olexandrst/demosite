@@ -1435,8 +1435,8 @@
             // Init map if needed
             if (!leafletMap) {
                 leafletMap = L.map('mapContainer', { zoomControl: true });
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    attribution: '',
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                     maxZoom: 19
                 }).addTo(leafletMap);
             }
@@ -1795,8 +1795,8 @@
                 dragging: false, scrollWheelZoom: false, doubleClickZoom: false,
                 touchZoom: false, keyboard: false, boxZoom: false
             }).setView([49.5, 18], 5);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 16
             }).addTo(bgMap);
 
             loadEmbeddedDictionary();
